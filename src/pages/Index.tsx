@@ -7,6 +7,7 @@ import FeaturedEvents from '@/components/FeaturedEvents';
 import HotelSection from '@/components/HotelSection';
 import MedicalServices from '@/components/MedicalServices';
 import UniqueFeatures from '@/components/UniqueFeatures';
+import Nightlife from '@/components/Nightlife';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -20,6 +21,7 @@ const Index = () => {
         <HotelSection />
         <MedicalServices />
         <UniqueFeatures />
+        <Nightlife />
       </main>
       <Footer />
     </div>
