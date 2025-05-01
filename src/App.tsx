@@ -10,6 +10,8 @@ import NightlifePage from "./pages/NightlifePage";
 import NightlifeDetail from "./pages/NightlifeDetail";
 import HotelListPage from "./pages/HotelListPage";
 import HotelDetailPage from "./pages/HotelDetailPage";
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +29,8 @@ const App = () => (
           <Route path="/nightlife/:venueId" element={<NightlifeDetail />} />
           <Route path="/hotels" element={<HotelListPage />} />
           <Route path="/hotels/:hotelId" element={<HotelDetailPage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

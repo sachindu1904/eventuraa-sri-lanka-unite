@@ -28,9 +28,9 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-600 hover:text-gray-800">
+              <Link to="/hotels" className="text-gray-600 hover:text-gray-800">
                 Hotels
-              </a>
+              </Link>
             </li>
             <li>
               <a href="#" className="text-gray-600 hover:text-gray-800">
@@ -38,7 +38,14 @@ const Header = () => {
               </a>
             </li>
             <li>
-              <Button variant="outline">Sign In</Button>
+              <Link to="/signin">
+                <Button variant="outline">Sign In</Button>
+              </Link>
+            </li>
+            <li>
+              <Link to="/signup">
+                <Button variant="default">Sign Up</Button>
+              </Link>
             </li>
           </ul>
         </nav>
