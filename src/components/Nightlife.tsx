@@ -3,9 +3,11 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Music, MartiniIcon, Calendar, PartyPopper, Disc } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 const NightlifeCard = ({ 
   name, 
+  id,
   type, 
   image, 
   location, 
@@ -13,6 +15,7 @@ const NightlifeCard = ({
   description
 }: {
   name: string;
+  id?: string;
   type: string;
   image: string;
   location: string;
@@ -48,9 +51,11 @@ const NightlifeCard = ({
         <p className="text-sm text-gray-600">{description}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button className="w-full bg-eventuraa-blue hover:bg-blue-600">
-          Book a Table
-        </Button>
+        <Link to={id ? `/nightlife/${id}` : "/nightlife"} className="w-full">
+          <Button className="w-full bg-eventuraa-blue hover:bg-blue-600">
+            {id ? "View Details & Reviews" : "Book a Table"}
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   );
@@ -58,6 +63,7 @@ const NightlifeCard = ({
 
 const PartyOrganizerCard = ({
   name,
+  id,
   type,
   image,
   venues,
@@ -65,6 +71,7 @@ const PartyOrganizerCard = ({
   description
 }: {
   name: string;
+  id?: string;
   type: string;
   image: string;
   venues: string[];
@@ -101,9 +108,11 @@ const PartyOrganizerCard = ({
         <p className="text-sm text-gray-600">{description}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button className="w-full bg-eventuraa-orange hover:bg-orange-600">
-          View Events
-        </Button>
+        <Link to={id ? `/nightlife/${id}` : "/nightlife"} className="w-full">
+          <Button className="w-full bg-eventuraa-orange hover:bg-orange-600">
+            {id ? "View Events & Reviews" : "View Events"}
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   );
@@ -152,9 +161,11 @@ const EventCard = ({
         <p className="text-sm text-gray-600">{description}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button className="w-full bg-eventuraa-blue hover:bg-blue-600">
-          Book Tickets
-        </Button>
+        <Link to="/nightlife" className="w-full">
+          <Button className="w-full bg-eventuraa-blue hover:bg-blue-600">
+            Book Tickets
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   );
@@ -163,6 +174,7 @@ const EventCard = ({
 const Nightlife = () => {
   const nightlifeVenues = [
     {
+      id: "on14",
       name: "In The Moment",
       type: "Nightclub",
       image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
@@ -171,6 +183,7 @@ const Nightlife = () => {
       description: "A high-energy nightclub with top DJs, premium drinks, and an electric atmosphere perfect for dancing the night away."
     },
     {
+      id: "sinclair",
       name: "La Foresta",
       type: "Brunch & Bar",
       image: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
@@ -179,6 +192,7 @@ const Nightlife = () => {
       description: "Upscale dining venue that transforms into a vibrant bar in the evenings, featuring live music and craft cocktails."
     },
     {
+      id: "b52",
       name: "Rhythm & Blues",
       type: "Lounge Bar",
       image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
@@ -187,6 +201,7 @@ const Nightlife = () => {
       description: "A sophisticated lounge with beach views, featuring signature cocktails and regular live music performances."
     },
     {
+      id: "h2o",
       name: "Silk Colombo",
       type: "Nightclub",
       image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
@@ -198,6 +213,7 @@ const Nightlife = () => {
 
   const partyOrganizers = [
     {
+      id: "inthemoment",
       name: "In The Moment (ITM)",
       type: "Event Organizer",
       image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
@@ -206,6 +222,7 @@ const Nightlife = () => {
       description: "Known for high-energy beach parties and club events featuring top DJs from around the world."
     },
     {
+      id: "subbeat",
       name: "Sub Beat",
       type: "Event Organizer",
       image: "https://images.unsplash.com/photo-1571266752333-31a55580148c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
@@ -214,6 +231,7 @@ const Nightlife = () => {
       description: "Specializes in deep house, techno, and underground music events at top clubs and unique venues."
     },
     {
+      id: "lifedance",
       name: "Life Dance",
       type: "Event Organizer",
       image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
@@ -222,6 +240,7 @@ const Nightlife = () => {
       description: "Famous for massive beach raves featuring international and local DJs in Sri Lanka's most beautiful coastal locations."
     },
     {
+      id: "crc",
       name: "Colombo Racing Crew",
       type: "Event Organizer",
       image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60",
@@ -278,6 +297,13 @@ const Nightlife = () => {
           <p className="section-subtitle text-gray-300">
             Experience the vibrant nightlife scene with exclusive clubs, lounges, and dining experiences
           </p>
+          <div className="mt-4">
+            <Link to="/nightlife">
+              <Button className="bg-eventuraa-blue hover:bg-blue-600">
+                Explore All Venues & Reviews
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -354,9 +380,11 @@ const Nightlife = () => {
         </div>
 
         <div className="mt-12 text-center">
-          <Button className="bg-eventuraa-purple hover:bg-eventuraa-darkPurple">
-            Explore All Nightlife Venues
-          </Button>
+          <Link to="/nightlife">
+            <Button className="bg-eventuraa-purple hover:bg-eventuraa-darkPurple">
+              Explore All Nightlife Venues & Share Your Reviews
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -19,6 +20,11 @@ const Header = () => {
             <li>
               <Link to="/events" className="text-gray-600 hover:text-gray-800">
                 Events
+              </Link>
+            </li>
+            <li>
+              <Link to="/nightlife" className="text-gray-600 hover:text-gray-800">
+                Nightlife
               </Link>
             </li>
             <li>
