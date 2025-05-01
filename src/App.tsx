@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import EventPage from "./pages/EventPage";
 import NightlifePage from "./pages/NightlifePage";
 import NightlifeDetail from "./pages/NightlifeDetail";
+import HotelListPage from "./pages/HotelListPage";
+import HotelDetailPage from "./pages/HotelDetailPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +25,8 @@ const App = () => (
           <Route path="/events" element={<EventPage />} />
           <Route path="/nightlife" element={<NightlifePage />} />
           <Route path="/nightlife/:venueId" element={<NightlifeDetail />} />
+          <Route path="/hotels" element={<HotelListPage />} />
+          <Route path="/hotels/:hotelId" element={<HotelDetailPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
