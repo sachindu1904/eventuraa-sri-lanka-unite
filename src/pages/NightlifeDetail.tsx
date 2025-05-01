@@ -1,274 +1,563 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ReviewSystem from '@/components/ReviewSystem';
-import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Clock, Instagram, Music, ExternalLink } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { MapPin, Star, Calendar, Wifi, Coffee, Waves, Utensils, Check, Phone } from 'lucide-react';
+import { toast } from "sonner";
 
-// Sample data for nightclub venues
-const nightclubsData = {
-  "on14": {
-    name: "ON14 Rooftop Lounge & Nightclub",
-    location: "Hilton Colombo",
-    description: "One of the most famous nightclubs, offering a rooftop experience with great views of the city. Plays EDM, hip-hop, and Bollywood music.",
-    image: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60",
-    hours: "7:00 PM - 2:00 AM",
-    music: "EDM, Hip-Hop, Bollywood",
-    social: "@on14colombo",
-    dressCode: "Smart casual (no shorts or flip-flops)",
-    entryFee: "1,500-3,000 LKR",
-    tips: ["Call ahead for reservations", "Best to arrive before 11 PM to avoid queues", "Check their Instagram for special events"],
-    reviews: [
+const HotelDetailPage = () => {
+  const { hotelId } = useParams<{ hotelId: string }>();
+  const [selectedRoom, setSelectedRoom] = useState('deluxe');
+  const [checkInDate, setCheckInDate] = useState('');
+  const [checkOutDate, setCheckOutDate] = useState('');
+  const [guests, setGuests] = useState('2');
+  const [addOns, setAddOns] = useState<string[]>([]);
+
+  // Mock hotel data - in a real app, this would be fetched based on the hotelId
+  const hotel = {
+    id: hotelId || 'hotel1',
+    name: 'Kandy Heritage Resort',
+    rating: 4.8,
+    images: [
+      'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzR8fGx1eHVyeSUyMGhvdGVsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
+      'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjR8fGx1eHVyeSUyMGhvdGVsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8aG90ZWx8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60',
+      'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTV8fGhvdGVsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
+    ],
+    location: 'Kandy, Sri Lanka',
+    address: '123 Temple Road, Kandy, Sri Lanka',
+    description: 'This beautiful heritage resort in Kandy offers stunning views of the sacred Temple of the Tooth and the picturesque Kandy Lake. With its colonial architecture and modern amenities, it provides the perfect blend of tradition and luxury.',
+    price: 18500,
+    rooms: [
       {
-        id: 1,
-        name: "Alex T.",
-        rating: 5,
-        comment: "Amazing views of Colombo at night! Great music and crowd.",
-        date: "2024-04-15",
-        venue: "ON14 Rooftop Lounge & Nightclub"
+        id: 'deluxe',
+        name: 'Deluxe Room',
+        price: 18500,
+        description: 'Spacious room with a king-sized bed and city view.',
+        amenities: ['Air conditioning', 'Free WiFi', 'Flat-screen TV', 'Private bathroom']
       },
       {
-        id: 2,
-        name: "Sarah L.",
-        rating: 4,
-        comment: "Good vibes and decent cocktails, but a bit pricey.",
-        date: "2024-04-02",
-        venue: "ON14 Rooftop Lounge & Nightclub"
-      }
-    ]
-  },
-  "sinclair": {
-    name: "Sinclair's",
-    location: "Colombo 3",
-    description: "A stylish lounge and nightclub with a mix of live music and DJs. Popular among expats and locals.",
-    image: "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60",
-    hours: "8:00 PM - 3:00 AM",
-    music: "House, R&B, Pop Hits",
-    social: "@sinclairscolombo",
-    dressCode: "Smart casual",
-    entryFee: "1,000-2,000 LKR",
-    tips: ["Weekends get very crowded", "Great place to meet both locals and tourists", "Famous for their signature cocktails"],
-    reviews: [
-      {
-        id: 1,
-        name: "Michael R.",
-        rating: 5,
-        comment: "Best club in Colombo! Great mix of music and friendly staff.",
-        date: "2024-03-25",
-        venue: "Sinclair's"
-      }
-    ]
-  },
-  "inthemoment": {
-    name: "In The Moment (ITM)",
-    location: "Various venues across Sri Lanka",
-    description: "Known for high-energy beach parties and club events with top DJs. Popular venues include Sass Ultra Lounge (Colombo), RK Beach (Hikkaduwa), and The Bay 5 (Mount Lavinia).",
-    image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60",
-    hours: "Event-based",
-    music: "EDM, House, Techno",
-    social: "@inthemoment.lk",
-    dressCode: "Beach casual to smart casual depending on venue",
-    entryFee: "2,000-5,000 LKR",
-    tips: ["Follow their Instagram for event announcements", "Pre-book tickets for popular events", "Beach parties are usually during December-April"],
-    reviews: [
-      {
-        id: 1,
-        name: "Priya M.",
-        rating: 5,
-        comment: "Their beach parties are legendary! Great international DJs and amazing production.",
-        date: "2024-02-20",
-        venue: "In The Moment (ITM)"
+        id: 'suite',
+        name: 'Heritage Suite',
+        price: 25000,
+        description: 'Luxurious suite with separate living area and panoramic views of Kandy Lake.',
+        amenities: ['Air conditioning', 'Free WiFi', 'Flat-screen TV', 'Private bathroom', 'Balcony', 'Minibar']
       },
       {
-        id: 2,
-        name: "Tom B.",
-        rating: 4,
-        comment: "Awesome vibes but drinks can be expensive.",
-        date: "2024-01-15",
-        venue: "In The Moment (ITM)"
+        id: 'family',
+        name: 'Family Room',
+        price: 22000,
+        description: 'Comfortable room with two queen beds, perfect for families.',
+        amenities: ['Air conditioning', 'Free WiFi', 'Flat-screen TV', 'Private bathroom', 'Extra space']
       }
+    ],
+    amenities: [
+      { name: 'Free WiFi', icon: Wifi },
+      { name: 'Breakfast Included', icon: Coffee },
+      { name: 'Swimming Pool', icon: Waves },
+      { name: 'Restaurant', icon: Utensils }
+    ],
+    nearestEvent: {
+      name: 'Kandy Perahera',
+      date: 'August 5-15, 2024',
+      distance: '5-min walk'
+    },
+    highlights: [
+      'Best rooftop views of Kandy Perahera',
+      'Ayurvedic spa packages available',
+      'Free tuk-tuk shuttle to city center'
+    ],
+    policies: [
+      'Free cancellation until 24 hours before check-in',
+      'Check-in from 14:00, Check-out by 12:00',
+      'No pets allowed',
+      'No smoking in rooms'
     ]
-  },
-  "subbeat": {
-    name: "Sub Beat",
-    location: "Various venues across Sri Lanka",
-    description: "Focuses on deep house, techno, and underground music. Hosts events at clubs like Clique, Playtrix, and beach locations.",
-    image: "https://images.unsplash.com/photo-1571266752333-31a55580148c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60",
-    hours: "Event-based",
-    music: "Deep House, Techno, Underground",
-    social: "@subbeat.lk",
-    dressCode: "Casual to smart casual",
-    entryFee: "1,500-3,000 LKR",
-    tips: ["Great for electronic music lovers", "Often features underground international artists", "Check their social media for upcoming events"],
-    reviews: []
-  }
-};
-
-const NightlifeDetail = () => {
-  const { venueId } = useParams();
-  const venue = nightclubsData[venueId] || {
-    name: "Venue Not Found",
-    location: "",
-    description: "Sorry, this venue information is not available.",
-    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60",
-    hours: "",
-    music: "",
-    social: "",
-    dressCode: "",
-    entryFee: "",
-    tips: [],
-    reviews: []
   };
   
+  const handleRoomChange = (roomId: string) => {
+    setSelectedRoom(roomId);
+  };
+  
+  const handleAddOnToggle = (addon: string) => {
+    if (addOns.includes(addon)) {
+      setAddOns(addOns.filter(a => a !== addon));
+    } else {
+      setAddOns([...addOns, addon]);
+    }
+  };
+  
+  const calculateTotal = () => {
+    const room = hotel.rooms.find(r => r.id === selectedRoom);
+    let total = room ? room.price : 0;
+    
+    // Add costs of add-ons
+    if (addOns.includes('transport')) total += 2000;
+    if (addOns.includes('breakfast')) total += 1500;
+    if (addOns.includes('spa')) total += 3500;
+    
+    return total;
+  };
+
+  const handleReservation = () => {
+    toast.success(`Booking confirmed at ${hotel.name}!`);
+  };
+  
+  const handleExternalBooking = () => {
+    toast.info("Redirecting to external booking site...");
+  };
+
+  const selectedRoomData = hotel.rooms.find(room => room.id === selectedRoom);
+
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-grow">
-        {/* Hero Banner */}
-        <div className="relative h-64 md:h-96">
-          <div className="absolute inset-0 bg-black/50 z-10"></div>
-          <img 
-            src={venue.image} 
-            alt={venue.name} 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 flex items-center justify-center z-20">
-            <div className="text-center text-white max-w-3xl px-4">
-              <h1 className="text-3xl md:text-4xl font-bold mb-2 font-display">{venue.name}</h1>
-              <p className="flex items-center justify-center gap-2 text-lg">
-                <MapPin className="h-5 w-5" />
-                {venue.location}
-              </p>
+        {/* Hero Section */}
+        <div className="relative h-[50vh]">
+          <Carousel className="h-full">
+            <CarouselContent className="h-full">
+              {hotel.images.map((image, index) => (
+                <CarouselItem key={index} className="h-full">
+                  <div className="h-full w-full">
+                    <img 
+                      src={image} 
+                      alt={`${hotel.name} - image ${index + 1}`} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
+          
+          <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white">
+            <div className="container-custom">
+              <h1 className="text-3xl md:text-4xl font-bold mb-1">{hotel.name}</h1>
+              <div className="flex items-center mb-2">
+                <Star className="h-5 w-5 fill-yellow-400 stroke-yellow-400 mr-1" />
+                <span className="font-medium mr-2">{hotel.rating}</span>
+                <span className="text-white/90">Exceptional</span>
+              </div>
+              
+              <div className="flex items-center">
+                <MapPin className="h-4 w-4 mr-1" />
+                <span>{hotel.location}</span>
+                {hotel.nearestEvent && (
+                  <div className="ml-4 bg-orange-500 text-white px-2 py-1 rounded-full text-sm flex items-center">
+                    <Calendar className="h-3 w-3 mr-1" />
+                    <span>{hotel.nearestEvent.distance} to {hotel.nearestEvent.name}</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
         
-        <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              {/* Venue Details */}
-              <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-4 font-display">About {venue.name}</h2>
-                <p className="text-gray-700 mb-8">{venue.description}</p>
+        <div className="container-custom py-8">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Main Content */}
+            <div className="lg:w-2/3">
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">About This Hotel</h2>
+                <p className="text-gray-700">{hotel.description}</p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="flex items-start gap-3">
-                    <div className="bg-eventuraa-blue/10 p-3 rounded-full">
-                      <Clock className="h-6 w-6 text-eventuraa-blue" />
+                <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {hotel.amenities.map((amenity, index) => (
+                    <div key={index} className="flex items-center">
+                      <amenity.icon className="h-5 w-5 text-eventuraa-blue mr-2" />
+                      <span>{amenity.name}</span>
                     </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Opening Hours</h3>
-                      <p className="text-gray-600">{venue.hours}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <div className="bg-eventuraa-purple/10 p-3 rounded-full">
-                      <Music className="h-6 w-6 text-eventuraa-purple" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Music Style</h3>
-                      <p className="text-gray-600">{venue.music}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <div className="bg-pink-100 p-3 rounded-full">
-                      <Instagram className="h-6 w-6 text-pink-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Social</h3>
-                      <p className="text-gray-600">{venue.social}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <div className="bg-orange-100 p-3 rounded-full">
-                      <Calendar className="h-6 w-6 text-orange-500" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Entry Fee</h3>
-                      <p className="text-gray-600">{venue.entryFee}</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-                
-                {venue.tips.length > 0 && (
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <h3 className="font-semibold mb-2">Tips for Visitors</h3>
-                    <ul className="list-disc pl-5 space-y-1">
-                      {venue.tips.map((tip, idx) => (
-                        <li key={idx} className="text-gray-700">{tip}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </div>
               
-              {/* Reviews */}
-              <ReviewSystem 
-                venueId={venueId}
-                venueName={venue.name}
-                initialReviews={venue.reviews}
-              />
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">Select Room Type</h2>
+                <div className="space-y-4">
+                  {hotel.rooms.map(room => (
+                    <Card 
+                      key={room.id} 
+                      className={`cursor-pointer transition-all border-2 ${selectedRoom === room.id ? 'border-eventuraa-blue' : 'border-gray-100'}`}
+                      onClick={() => handleRoomChange(room.id)}
+                    >
+                      <CardContent className="p-4 flex flex-col md:flex-row md:items-center gap-4">
+                        <div className="md:w-1/4">
+                          <img 
+                            src={hotel.images[1]} 
+                            alt={room.name} 
+                            className="w-full h-32 object-cover rounded-md"
+                          />
+                        </div>
+                        
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold">{room.name}</h3>
+                          <p className="text-gray-600 text-sm mb-2">{room.description}</p>
+                          
+                          <div className="flex flex-wrap gap-2">
+                            {room.amenities.map((amenity, index) => (
+                              <span key={index} className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
+                                {amenity}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        <div className="text-right">
+                          <p className="font-bold text-lg text-eventuraa-blue">LKR {room.price.toLocaleString()}</p>
+                          <p className="text-xs text-gray-500">per night</p>
+                          
+                          {selectedRoom === room.id && (
+                            <div className="mt-2 flex justify-end">
+                              <div className="bg-eventuraa-blue text-white p-1 rounded-full">
+                                <Check className="h-4 w-4" />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="mb-8">
+                <Tabs defaultValue="highlights">
+                  <TabsList className="mb-4">
+                    <TabsTrigger value="highlights">Local Highlights</TabsTrigger>
+                    <TabsTrigger value="location">Location</TabsTrigger>
+                    <TabsTrigger value="reviews">Reviews</TabsTrigger>
+                    <TabsTrigger value="policies">Policies</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="highlights">
+                    <Card>
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold mb-4">Why Sri Lankan Tourists Love This Hotel</h3>
+                        <ul className="space-y-3">
+                          {hotel.highlights.map((highlight, index) => (
+                            <li key={index} className="flex items-start">
+                              <Check className="h-5 w-5 text-green-600 mr-2 mt-0.5" />
+                              <span>{highlight}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                          <h4 className="font-bold mb-3">Cultural Compatibility</h4>
+                          <div className="flex gap-4">
+                            <div className="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                              <span className="text-lg mr-1">☸️</span>
+                              <span className="text-sm">Buddhist-Friendly</span>
+                            </div>
+                            <div className="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                              <span className="text-lg mr-1">🥗</span>
+                              <span className="text-sm">Vegetarian Options</span>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                  
+                  <TabsContent value="location">
+                    <Card>
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold mb-4">Location</h3>
+                        <p className="mb-4">{hotel.address}</p>
+                        
+                        <div className="aspect-video bg-gray-200 mb-4">
+                          {/* Placeholder for map - in a real app this would be an actual map */}
+                          <div className="w-full h-full flex items-center justify-center bg-blue-100 text-blue-800">
+                            Interactive Map would be displayed here
+                          </div>
+                        </div>
+                        
+                        <h4 className="font-bold mb-2">Nearby Attractions</h4>
+                        <ul className="space-y-2">
+                          <li className="flex items-start">
+                            <MapPin className="h-4 w-4 mr-2 mt-1 text-eventuraa-blue" />
+                            <div>
+                              <span className="font-medium">Temple of the Tooth</span>
+                              <span className="text-sm text-gray-600 block">0.5 km</span>
+                            </div>
+                          </li>
+                          <li className="flex items-start">
+                            <MapPin className="h-4 w-4 mr-2 mt-1 text-eventuraa-blue" />
+                            <div>
+                              <span className="font-medium">Kandy Lake</span>
+                              <span className="text-sm text-gray-600 block">0.3 km</span>
+                            </div>
+                          </li>
+                          <li className="flex items-start">
+                            <MapPin className="h-4 w-4 mr-2 mt-1 text-eventuraa-blue" />
+                            <div>
+                              <span className="font-medium">Perahera Route</span>
+                              <span className="text-sm text-gray-600 block">0.2 km</span>
+                            </div>
+                          </li>
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                  
+                  <TabsContent value="reviews">
+                    <Card>
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold mb-4">Guest Reviews</h3>
+                        <div className="flex items-center mb-6">
+                          <div className="bg-green-500 text-white text-xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-3">
+                            4.8
+                          </div>
+                          <div>
+                            <div className="text-green-600 font-medium">Exceptional</div>
+                            <div className="text-sm text-gray-600">Based on 245 reviews</div>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-6">
+                          {/* Sample review 1 */}
+                          <div className="pb-4 border-b border-gray-200">
+                            <div className="flex justify-between mb-2">
+                              <div className="font-medium">Nimal P.</div>
+                              <div className="flex items-center">
+                                <Star className="h-4 w-4 fill-yellow-400 stroke-yellow-400" />
+                                <span className="ml-1">5.0</span>
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-1">Perfect location for viewing Perahera!</p>
+                            <div className="text-xs text-gray-500">Stayed May 2024 • Family trip</div>
+                          </div>
+                          
+                          {/* Sample review 2 */}
+                          <div className="pb-4 border-b border-gray-200">
+                            <div className="flex justify-between mb-2">
+                              <div className="font-medium">Amali W.</div>
+                              <div className="flex items-center">
+                                <Star className="h-4 w-4 fill-yellow-400 stroke-yellow-400" />
+                                <span className="ml-1">4.5</span>
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-1">Excellent service and the ayurvedic spa was wonderful! Would recommend the heritage suite for the lake view.</p>
+                            <div className="text-xs text-gray-500">Stayed April 2024 • Couple</div>
+                          </div>
+                          
+                          {/* Sample review 3 */}
+                          <div>
+                            <div className="flex justify-between mb-2">
+                              <div className="font-medium">James T.</div>
+                              <div className="flex items-center">
+                                <Star className="h-4 w-4 fill-yellow-400 stroke-yellow-400" />
+                                <span className="ml-1">4.8</span>
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-1">The free tuk-tuk service made exploring the city so convenient. The breakfast was amazing with both Western and Sri Lankan options.</p>
+                            <div className="text-xs text-gray-500">Stayed March 2024 • Business trip</div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                  
+                  <TabsContent value="policies">
+                    <Card>
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold mb-4">Hotel Policies</h3>
+                        <ul className="space-y-3">
+                          {hotel.policies.map((policy, index) => (
+                            <li key={index} className="flex items-start">
+                              <div className="h-5 w-5 text-eventuraa-blue mr-2">•</div>
+                              <span>{policy}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                          <h4 className="font-bold mb-3">Emergency Information</h4>
+                          <div className="flex items-start">
+                            <Phone className="h-5 w-5 text-red-600 mr-2 mt-0.5" />
+                            <div>
+                              <div className="font-medium">Doctor on Call</div>
+                              <div className="text-sm text-gray-600">24/7 medical assistance available</div>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              </div>
+              
+              {/* Event Package Promotion */}
+              <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200 mb-8">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="inline-block bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded mb-2">Special Package</span>
+                    <h3 className="text-xl font-bold mb-2">Book Hotel + Event: Kandy Perahera</h3>
+                    <p className="text-gray-700 mb-4">Get 15% off your stay when you book with Perahera premium viewing tickets!</p>
+                    <Button className="bg-eventuraa-blue hover:bg-blue-600">
+                      View Package Details
+                    </Button>
+                  </div>
+                  <div className="bg-blue-500 text-white font-bold px-3 py-2 rounded-full text-xl">
+                    -15%
+                  </div>
+                </div>
+              </div>
             </div>
             
-            <div className="lg:col-span-1">
-              {/* Sidebar Info */}
-              <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h3 className="text-xl font-bold mb-4 font-display">Location</h3>
-                <div className="aspect-video bg-gray-200 rounded-lg mb-4 overflow-hidden">
-                  <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31686.71372722332!2d79.83149373476564!3d6.916554200000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae259decde08aa9%3A0x2066a30ffd9f35be!2sHilton%20Colombo!5e0!3m2!1sen!2sus!4v1651978161344!5m2!1sen!2sus" 
-                    width="100%" 
-                    height="100%" 
-                    className="border-0"
-                    allowFullScreen=""
-                    loading="lazy"
-                    title="Venue location"
-                  ></iframe>
-                </div>
-                <Button className="w-full bg-eventuraa-blue hover:bg-blue-600 mb-4">
-                  Get Directions
-                </Button>
+            {/* Booking Sidebar */}
+            <div className="lg:w-1/3">
+              <div className="sticky top-4">
+                <Card className="shadow-lg">
+                  <CardContent className="p-6">
+                    <h2 className="text-xl font-bold mb-4">Book Your Stay</h2>
+                    
+                    <div className="space-y-4 mb-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <Label htmlFor="checkin">Check-in</Label>
+                          <Input 
+                            id="checkin" 
+                            type="date" 
+                            value={checkInDate}
+                            onChange={(e) => setCheckInDate(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="checkout">Check-out</Label>
+                          <Input 
+                            id="checkout" 
+                            type="date"
+                            value={checkOutDate}
+                            onChange={(e) => setCheckOutDate(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <Label htmlFor="guests">Guests</Label>
+                        <select 
+                          id="guests" 
+                          className="w-full p-2 border border-gray-300 rounded-md"
+                          value={guests}
+                          onChange={(e) => setGuests(e.target.value)}
+                        >
+                          <option value="1">1 Guest</option>
+                          <option value="2">2 Guests</option>
+                          <option value="3">3 Guests</option>
+                          <option value="4">4 Guests</option>
+                        </select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <Label>Selected Room</Label>
+                        <div className="p-3 bg-gray-50 rounded-md">
+                          <div className="font-medium">{selectedRoomData?.name}</div>
+                          <div className="text-sm text-gray-600">{selectedRoomData?.description}</div>
+                          <div className="font-bold text-eventuraa-blue mt-1">LKR {selectedRoomData?.price.toLocaleString()}</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3 mb-6 border-t border-gray-200 pt-4">
+                      <Label>Add-ons</Label>
+                      
+                      <div className="flex items-start space-x-2">
+                        <Checkbox 
+                          id="addon-transport" 
+                          checked={addOns.includes('transport')}
+                          onCheckedChange={() => handleAddOnToggle('transport')}
+                        />
+                        <div>
+                          <Label htmlFor="addon-transport" className="font-medium">Event Transport Package</Label>
+                          <p className="text-sm text-gray-600">VIP drop-off/pickup for Kandy Perahera</p>
+                          <p className="text-xs text-eventuraa-blue">+ LKR 2,000</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-2">
+                        <Checkbox 
+                          id="addon-breakfast" 
+                          checked={addOns.includes('breakfast')}
+                          onCheckedChange={() => handleAddOnToggle('breakfast')}
+                        />
+                        <div>
+                          <Label htmlFor="addon-breakfast" className="font-medium">Premium Breakfast</Label>
+                          <p className="text-sm text-gray-600">Enhanced breakfast with local specialties</p>
+                          <p className="text-xs text-eventuraa-blue">+ LKR 1,500</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-2">
+                        <Checkbox 
+                          id="addon-spa" 
+                          checked={addOns.includes('spa')}
+                          onCheckedChange={() => handleAddOnToggle('spa')}
+                        />
+                        <div>
+                          <Label htmlFor="addon-spa" className="font-medium">Ayurvedic Spa Package</Label>
+                          <p className="text-sm text-gray-600">60-min traditional treatment</p>
+                          <p className="text-xs text-eventuraa-blue">+ LKR 3,500</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4 border-t border-gray-200 pt-4">
+                      <div className="flex justify-between">
+                        <span>Total:</span>
+                        <span className="font-bold text-xl">LKR {calculateTotal().toLocaleString()}</span>
+                      </div>
+                      
+                      <Button 
+                        className="w-full bg-green-600 hover:bg-green-700"
+                        onClick={handleReservation}
+                      >
+                        Reserve with Eventuraa
+                      </Button>
+                      
+                      <Button 
+                        variant="outline"
+                        className="w-full border-gray-300 text-gray-700"
+                        onClick={handleExternalBooking}
+                      >
+                        Book on Booking.com
+                      </Button>
+                      
+                      <div className="flex flex-col space-y-2 bg-gray-50 p-3 rounded-md">
+                        <div className="flex items-center text-green-600">
+                          <Check className="h-4 w-4 mr-2 text-green-600" />
+                          <span className="text-sm font-medium">Free cancellation</span>
+                        </div>
+                        <div className="flex items-center text-green-600">
+                          <Check className="h-4 w-4 mr-2 text-green-600" />
+                          <span className="text-sm font-medium">Doctor-on-call guaranteed</span>
+                        </div>
+                        <div className="flex items-center text-green-600">
+                          <Check className="h-4 w-4 mr-2 text-green-600" />
+                          <span className="text-sm font-medium">Secure payment</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
                 
-                <div className="border-t border-gray-200 pt-4 mt-4">
-                  <h3 className="text-xl font-bold mb-4 font-display">Dress Code</h3>
-                  <p className="text-gray-700 mb-4">{venue.dressCode}</p>
-                  
-                  <Button className="w-full bg-eventuraa-orange hover:bg-orange-600 flex items-center justify-center gap-2">
-                    <ExternalLink className="h-4 w-4" />
-                    Visit Official Website
+                {/* Emergency Card */}
+                <div className="mt-6">
+                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white flex items-center justify-center">
+                    <Phone className="h-4 w-4 mr-2" />
+                    Find Nearest Medical Services
                   </Button>
-                </div>
-              </div>
-              
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-xl font-bold mb-4 font-display">Upcoming Events</h3>
-                <div className="space-y-4">
-                  <div className="border-b border-gray-200 pb-4">
-                    <div className="font-semibold">Weekend DJ Night</div>
-                    <div className="text-gray-500 text-sm flex items-center gap-1 mb-1">
-                      <Calendar className="h-3.5 w-3.5" /> 
-                      May 10, 2024
-                    </div>
-                    <Button size="sm" variant="outline" className="text-eventuraa-purple border-eventuraa-purple mt-2 hover:bg-eventuraa-purple hover:text-white">
-                      Book Now
-                    </Button>
-                  </div>
-                  <div className="border-b border-gray-200 pb-4">
-                    <div className="font-semibold">International DJ Guest</div>
-                    <div className="text-gray-500 text-sm flex items-center gap-1 mb-1">
-                      <Calendar className="h-3.5 w-3.5" /> 
-                      May 17, 2024
-                    </div>
-                    <Button size="sm" variant="outline" className="text-eventuraa-purple border-eventuraa-purple mt-2 hover:bg-eventuraa-purple hover:text-white">
-                      Book Now
-                    </Button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -281,4 +570,4 @@ const NightlifeDetail = () => {
   );
 };
 
-export default NightlifeDetail;
+export default HotelDetailPage;

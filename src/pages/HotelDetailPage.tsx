@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MapPin, Star, Calendar, Wifi, Coffee, Swimming, Utensils, Check, Phone } from 'lucide-react';
+import { MapPin, Star, Calendar, Wifi, Coffee, Waves, Utensils, Check, Phone } from 'lucide-react';
 import { toast } from "sonner";
 
 const HotelDetailPage = () => {
@@ -62,7 +62,7 @@ const HotelDetailPage = () => {
     amenities: [
       { name: 'Free WiFi', icon: Wifi },
       { name: 'Breakfast Included', icon: Coffee },
-      { name: 'Swimming Pool', icon: Swimming },
+      { name: 'Swimming Pool', icon: Waves },
       { name: 'Restaurant', icon: Utensils }
     ],
     nearestEvent: {
