@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -20,6 +19,7 @@ const NightlifeDetail = () => {
   const [guestCount, setGuestCount] = useState('2');
   const [reviewText, setReviewText] = useState('');
   const [reviewRating, setReviewRating] = useState(5);
+  const [addOns, setAddOns] = useState(['standard']);
 
   // Mock venue data - in a real app, this would be fetched based on the venueId
   const venueData = {
@@ -108,6 +108,14 @@ const NightlifeDetail = () => {
     
     toast.success("Thank you for your review!");
     setReviewText('');
+  };
+
+  const handleAddOnToggle = (addOn) => {
+    if (addOns.includes(addOn)) {
+      setAddOns(addOns.filter(a => a !== addOn));
+    } else {
+      setAddOns([...addOns, addOn]);
+    }
   };
 
   return (
@@ -447,7 +455,11 @@ const NightlifeDetail = () => {
                       <Label>Table Options</Label>
                       
                       <div className="flex items-start space-x-2">
-                        <Checkbox id="option-standard" />
+                        <Checkbox 
+                          id="option-standard"
+                          checked={!!addOns.includes('standard')}
+                          onCheckedChange={() => handleAddOnToggle('standard')}
+                        />
                         <div>
                           <Label htmlFor="option-standard" className="font-medium">Standard Table</Label>
                           <p className="text-sm text-gray-600">Regular seating, no minimum spend</p>
@@ -456,7 +468,11 @@ const NightlifeDetail = () => {
                       </div>
                       
                       <div className="flex items-start space-x-2">
-                        <Checkbox id="option-vip" />
+                        <Checkbox 
+                          id="option-vip" 
+                          checked={!!addOns.includes('vip')}
+                          onCheckedChange={() => handleAddOnToggle('vip')}
+                        />
                         <div>
                           <Label htmlFor="option-vip" className="font-medium">VIP Table</Label>
                           <p className="text-sm text-gray-600">Premium location, includes one bottle</p>
@@ -465,7 +481,11 @@ const NightlifeDetail = () => {
                       </div>
                       
                       <div className="flex items-start space-x-2">
-                        <Checkbox id="option-booth" />
+                        <Checkbox 
+                          id="option-booth"
+                          checked={!!addOns.includes('booth')}
+                          onCheckedChange={() => handleAddOnToggle('booth')} 
+                        />
                         <div>
                           <Label htmlFor="option-booth" className="font-medium">Private Booth</Label>
                           <p className="text-sm text-gray-600">Exclusive area for your group</p>
