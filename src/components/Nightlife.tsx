@@ -2,8 +2,9 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Music, MartiniIcon, Calendar, PartyPopper, Disc } from "lucide-react";
+import { Music, MartiniIcon, Calendar, PartyPopper, Disc, Ticket } from "lucide-react";
 import { Link } from 'react-router-dom';
+import { toast } from "@/components/ui/use-toast";
 
 const NightlifeCard = ({ 
   name, 
@@ -22,6 +23,15 @@ const NightlifeCard = ({
   hours: string;
   description: string;
 }) => {
+  const handleBuyTickets = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toast({
+      title: "Ticket Purchase Initiated",
+      description: `You're about to purchase tickets for ${name}`,
+    });
+  };
+
   return (
     <Card className="overflow-hidden transition-all hover:shadow-lg border border-gray-100 h-full flex flex-col">
       <div className="relative h-48 overflow-hidden">
@@ -50,12 +60,19 @@ const NightlifeCard = ({
         </div>
         <p className="text-sm text-gray-600">{description}</p>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-4 pt-0 grid grid-cols-2 gap-2">
         <Link to={id ? `/nightlife/${id}` : "/nightlife"} className="w-full">
           <Button className="w-full bg-eventuraa-blue hover:bg-blue-600">
-            {id ? "View Details & Reviews" : "Book a Table"}
+            {id ? "View Details" : "View Venue"}
           </Button>
         </Link>
+        <Button 
+          className="w-full bg-eventuraa-orange hover:bg-orange-600 flex items-center gap-2 justify-center"
+          onClick={handleBuyTickets}
+        >
+          <Ticket className="h-4 w-4" />
+          Buy Tickets
+        </Button>
       </CardFooter>
     </Card>
   );
@@ -78,6 +95,15 @@ const PartyOrganizerCard = ({
   social: string;
   description: string;
 }) => {
+  const handleBuyTickets = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toast({
+      title: "Event Tickets",
+      description: `Checking available tickets for ${name} events`,
+    });
+  };
+
   return (
     <Card className="overflow-hidden transition-all hover:shadow-lg border border-gray-100 h-full flex flex-col">
       <div className="relative h-48 overflow-hidden">
@@ -107,12 +133,19 @@ const PartyOrganizerCard = ({
         </div>
         <p className="text-sm text-gray-600">{description}</p>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-4 pt-0 grid grid-cols-2 gap-2">
         <Link to={id ? `/nightlife/${id}` : "/nightlife"} className="w-full">
-          <Button className="w-full bg-eventuraa-orange hover:bg-orange-600">
-            {id ? "View Events & Reviews" : "View Events"}
+          <Button className="w-full bg-eventuraa-blue hover:bg-blue-600">
+            {id ? "View Events" : "View Events"}
           </Button>
         </Link>
+        <Button 
+          className="w-full bg-eventuraa-orange hover:bg-orange-600 flex items-center gap-2 justify-center"
+          onClick={handleBuyTickets}
+        >
+          <Ticket className="h-4 w-4" />
+          Buy Tickets
+        </Button>
       </CardFooter>
     </Card>
   );
@@ -133,6 +166,14 @@ const EventCard = ({
   organizer: string;
   description: string;
 }) => {
+  const handleBuyTickets = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toast({
+      title: "Event Tickets",
+      description: `Purchasing tickets for ${name} at ${venue}`,
+    });
+  };
+
   return (
     <Card className="overflow-hidden transition-all hover:shadow-lg border border-gray-100 h-full flex flex-col">
       <div className="relative h-48 overflow-hidden">
@@ -161,11 +202,13 @@ const EventCard = ({
         <p className="text-sm text-gray-600">{description}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Link to="/nightlife" className="w-full">
-          <Button className="w-full bg-eventuraa-blue hover:bg-blue-600">
-            Book Tickets
-          </Button>
-        </Link>
+        <Button 
+          className="w-full bg-eventuraa-orange hover:bg-orange-600 flex items-center gap-2 justify-center"
+          onClick={handleBuyTickets}
+        >
+          <Ticket className="h-4 w-4" />
+          Buy Tickets
+        </Button>
       </CardFooter>
     </Card>
   );
