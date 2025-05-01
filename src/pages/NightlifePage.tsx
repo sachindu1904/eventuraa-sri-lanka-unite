@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MartiniIcon, Music, PartyPopper, Calendar, SearchIcon, MapIcon, Star, Clock, Ticket } from 'lucide-react';
+import { MartiniIcon, Music, PartyPopper, Calendar, SearchIcon, MapIcon, Star, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { toast } from "@/components/ui/use-toast";
 
 interface VenueProps {
   id: string;
@@ -24,15 +23,6 @@ interface VenueProps {
 }
 
 const VenueCard = ({ venue }: { venue: VenueProps }) => {
-  const handleBuyTickets = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toast({
-      title: "Ticket Purchase",
-      description: `You're about to purchase tickets for ${venue.name}`,
-    });
-  };
-
   return (
     <Card className="overflow-hidden transition-all hover:shadow-lg border border-gray-100 h-full flex flex-col">
       <div className="relative h-48 overflow-hidden">
@@ -72,34 +62,18 @@ const VenueCard = ({ venue }: { venue: VenueProps }) => {
         
         <p className="text-sm text-gray-600 line-clamp-2">{venue.description}</p>
       </CardContent>
-      <CardFooter className="p-4 pt-0 mt-auto grid grid-cols-2 gap-2">
+      <CardFooter className="p-4 pt-0 mt-auto">
         <Link to={`/nightlife/${venue.id}`} className="w-full">
           <Button className="w-full bg-eventuraa-blue hover:bg-blue-600">
             View Details
           </Button>
         </Link>
-        <Button 
-          className="w-full bg-eventuraa-orange hover:bg-orange-600 flex items-center gap-2 justify-center"
-          onClick={handleBuyTickets}
-        >
-          <Ticket className="h-4 w-4" />
-          Buy Tickets
-        </Button>
       </CardFooter>
     </Card>
   );
 };
 
 const EventOrganizerCard = ({ organizer }: { organizer: VenueProps }) => {
-  const handleBuyTickets = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toast({
-      title: "Event Tickets",
-      description: `Checking available events for ${organizer.name}`,
-    });
-  };
-
   return (
     <Card className="overflow-hidden transition-all hover:shadow-lg border border-gray-100 h-full flex flex-col">
       <div className="relative h-48 overflow-hidden">
@@ -132,19 +106,12 @@ const EventOrganizerCard = ({ organizer }: { organizer: VenueProps }) => {
         
         <p className="text-sm text-gray-600 line-clamp-2">{organizer.description}</p>
       </CardContent>
-      <CardFooter className="p-4 pt-0 mt-auto grid grid-cols-2 gap-2">
+      <CardFooter className="p-4 pt-0 mt-auto">
         <Link to={`/nightlife/${organizer.id}`} className="w-full">
-          <Button className="w-full bg-eventuraa-blue hover:bg-blue-600">
+          <Button className="w-full bg-eventuraa-orange hover:bg-orange-600">
             View Events
           </Button>
         </Link>
-        <Button 
-          className="w-full bg-eventuraa-orange hover:bg-orange-600 flex items-center gap-2 justify-center"
-          onClick={handleBuyTickets}
-        >
-          <Ticket className="h-4 w-4" />
-          Buy Tickets
-        </Button>
       </CardFooter>
     </Card>
   );

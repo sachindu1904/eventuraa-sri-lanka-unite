@@ -5,8 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ReviewSystem from '@/components/ReviewSystem';
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Clock, Instagram, Music, ExternalLink, Ticket } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
+import { Calendar, MapPin, Clock, Instagram, Music, ExternalLink } from "lucide-react";
 
 // Sample data for nightclub venues
 const nightclubsData = {
@@ -123,13 +122,6 @@ const NightlifeDetail = () => {
     reviews: []
   };
   
-  const handleBookTickets = () => {
-    toast({
-      title: "Ticket Purchase Initiated",
-      description: `You're about to purchase tickets for ${venue.name}`,
-    });
-  };
-  
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
@@ -204,18 +196,8 @@ const NightlifeDetail = () => {
                   </div>
                 </div>
                 
-                <div className="mt-8">
-                  <Button 
-                    className="bg-eventuraa-blue hover:bg-blue-600 flex items-center gap-2"
-                    onClick={handleBookTickets}
-                  >
-                    <Ticket className="h-4 w-4" />
-                    Buy Tickets
-                  </Button>
-                </div>
-                
-                {venue.tips && venue.tips.length > 0 && (
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-8">
+                {venue.tips.length > 0 && (
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                     <h3 className="font-semibold mb-2">Tips for Visitors</h3>
                     <ul className="list-disc pl-5 space-y-1">
                       {venue.tips.map((tip, idx) => (
@@ -244,7 +226,7 @@ const NightlifeDetail = () => {
                     width="100%" 
                     height="100%" 
                     className="border-0"
-                    allowFullScreen={true}
+                    allowFullScreen=""
                     loading="lazy"
                     title="Venue location"
                   ></iframe>
@@ -273,13 +255,8 @@ const NightlifeDetail = () => {
                       <Calendar className="h-3.5 w-3.5" /> 
                       May 10, 2024
                     </div>
-                    <Button 
-                      size="sm" 
-                      className="mt-2 bg-eventuraa-orange hover:bg-orange-600 flex items-center gap-2"
-                      onClick={handleBookTickets}
-                    >
-                      <Ticket className="h-3.5 w-3.5" />
-                      Buy Tickets
+                    <Button size="sm" variant="outline" className="text-eventuraa-purple border-eventuraa-purple mt-2 hover:bg-eventuraa-purple hover:text-white">
+                      Book Now
                     </Button>
                   </div>
                   <div className="border-b border-gray-200 pb-4">
@@ -288,13 +265,8 @@ const NightlifeDetail = () => {
                       <Calendar className="h-3.5 w-3.5" /> 
                       May 17, 2024
                     </div>
-                    <Button 
-                      size="sm" 
-                      className="mt-2 bg-eventuraa-orange hover:bg-orange-600 flex items-center gap-2"
-                      onClick={handleBookTickets}
-                    >
-                      <Ticket className="h-3.5 w-3.5" />
-                      Buy Tickets
+                    <Button size="sm" variant="outline" className="text-eventuraa-purple border-eventuraa-purple mt-2 hover:bg-eventuraa-purple hover:text-white">
+                      Book Now
                     </Button>
                   </div>
                 </div>
