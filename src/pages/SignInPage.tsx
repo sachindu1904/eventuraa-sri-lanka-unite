@@ -58,30 +58,39 @@ const SignInPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Nightlife background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('/lovable-uploads/dcfedfbc-2e9f-48f3-a0ae-3dc9746486c2.png')",
+        }}
+      />
+      
+      {/* Overlay to make the form more readable */}
+      <div className="absolute inset-0 bg-black/40" />
+      
       {/* Sri Lanka map watermark */}
       <div 
-        className="absolute inset-0 opacity-5 pointer-events-none"
+        className="absolute inset-0 opacity-5 pointer-events-none blend-overlay"
         style={{
           backgroundImage: "url('/srilanka-map.svg')",
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
           backgroundSize: 'contain',
+          mixBlendMode: 'overlay',
         }}
       />
       
-      {/* Blue to orange gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1E90FF]/10 to-[#FFA500]/10 pointer-events-none" />
-      
       <div className="container-custom py-6 flex justify-between items-center relative z-10">
-        <Link to="/" className="text-2xl font-bold text-gray-800 inline-flex">
+        <Link to="/" className="text-2xl font-bold text-white inline-flex">
           Eventuraa.lk
         </Link>
         <LanguageSwitcher />
       </div>
       
       <div className="flex-1 flex items-center justify-center px-4 py-10 relative z-10">
-        <Card className="w-full max-w-md shadow-xl border-gray-100 bg-white/95 backdrop-blur-sm">
+        <Card className="w-full max-w-md shadow-xl border-gray-100 bg-white/90 backdrop-blur-sm">
           <CardHeader className="text-center space-y-2">
             <CardTitle className="text-2xl font-bold text-gray-800 font-display">Welcome Back!</CardTitle>
             <CardDescription className="text-gray-600">
@@ -164,7 +173,7 @@ const SignInPage: React.FC = () => {
               
               <Button 
                 type="submit" 
-                className="w-full bg-[#1E90FF] hover:bg-[#1874CD] text-white font-medium" 
+                className="w-full bg-[#7E69AB] hover:bg-[#6E59A5] text-white font-medium" 
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -183,7 +192,7 @@ const SignInPage: React.FC = () => {
           <CardFooter className="flex flex-col space-y-4 text-center">
             <div className="text-sm text-gray-600">
               New to Eventuraa?{" "}
-              <Link to="/signup" className="text-[#1E90FF] hover:text-blue-700 hover:underline font-medium">
+              <Link to="/signup" className="text-[#7E69AB] hover:text-[#6E59A5] hover:underline font-medium">
                 Create Account
               </Link>
             </div>
