@@ -35,9 +35,9 @@ const Header = () => {
                 </Link>
               </li>
               <li>
-                <a href="#medical" className="text-gray-600 hover:text-gray-800">
+                <Link to="/medical" className="text-gray-600 hover:text-gray-800">
                   Medical
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>
