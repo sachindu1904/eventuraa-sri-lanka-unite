@@ -46,15 +46,15 @@ const MedicalPage = () => {
     <>
       <Header />
       
-      {/* Hero Section */}
+      {/* Hero Section - Updated with new doctor image */}
       <section className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/lovable-uploads/dcfedfbc-2e9f-48f3-a0ae-3dc9746486c2.png" 
-            alt="Medical professionals" 
-            className="w-full h-full object-cover"
+            src="/lovable-uploads/fd6c4d0f-c13f-43ab-9a2a-8067717bbe38.png" 
+            alt="Friendly Sri Lankan doctor" 
+            className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60"></div>
         </div>
         
         <div className="container-custom relative z-10 h-full flex flex-col justify-center items-center text-center">
