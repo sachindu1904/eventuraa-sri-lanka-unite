@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Eye, EyeOff, Mail, Lock, Passport, Shield, Info } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, CreditCard, Shield, Info } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
@@ -209,7 +209,7 @@ const SignInPage: React.FC = () => {
                 <span>Secure Login</span>
               </div>
               <div className="flex items-center justify-center gap-1.5">
-                <Passport className="h-3 w-3" />
+                <CreditCard className="h-3 w-3" />
                 <span>PCI-Compliant Payments</span>
               </div>
               <div className="flex items-center justify-center gap-1.5">
