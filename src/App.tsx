@@ -15,6 +15,8 @@ import SignUpPage from "./pages/SignUpPage";
 import MedicalPage from "./pages/MedicalPage";
 import DoctorLoginPage from "./pages/DoctorLoginPage";
 import DoctorPortal from "./pages/DoctorPortal";
+import OrganizerLoginPage from "./pages/OrganizerLoginPage";
+import OrganizerPortal from "./pages/OrganizerPortal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +37,8 @@ const App = () => (
           <Route path="/medical" element={<MedicalPage />} />
           <Route path="/doctor-login" element={<DoctorLoginPage />} />
           <Route path="/doctor-portal" element={<DoctorPortal />} />
+          <Route path="/organizer-login" element={<OrganizerLoginPage />} />
+          <Route path="/organizer-portal/*" element={<OrganizerPortal />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
