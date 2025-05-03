@@ -4,6 +4,16 @@ import React from 'react';
 export interface DoctorSettingsProps {
   doctor: {
     name: string;
+    photo?: string;
+    unreadMessages?: number;
+    isVerified?: boolean;
+    qualification?: string;
+    specialization?: string;
+    hospital?: string;
+    regNo?: string;
+    experience?: number;
+    appointmentsToday?: number;
+    urgentAppointments?: number;
   };
 }
 

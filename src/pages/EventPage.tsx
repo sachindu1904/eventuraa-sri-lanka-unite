@@ -1,14 +1,30 @@
-
 import React, { useState } from 'react';
-import { Calendar, MapPin, Music, Search } from 'lucide-react';
+import { Calendar, MapPin, Music, Search, Ticket, X } from 'lucide-react';
 import EventSearch from '@/components/EventSearch';
 import EventCard from '@/components/EventCard';
 import EventSuggestions from '@/components/EventSuggestions';
 import LocationSuggestions from '@/components/LocationSuggestions';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
-// Sample event data
+// User role enum (for future use)
+enum UserRole {
+  USER = 'user',
+  ORGANIZER = 'organizer',
+  ADMIN = 'admin'
+}
+
+// Extended event data with ticket types
 const events = [
   {
     id: 1,
@@ -17,8 +33,14 @@ const events = [
     location: "Kandy",
     image: "https://images.unsplash.com/photo-1625140574538-40bc923f0112?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c3JpJTIwbGFua2ElMjBwZXJhaGVyYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
     category: "Cultural",
-    price: "LKR 3,500",
-    description: "The Kandy Esala Perahera is one of the oldest and grandest of all Buddhist festivals in Sri Lanka, featuring dancers, jugglers, musicians, fire-breathers, and lavishly decorated elephants."
+    price: "From LKR 3,500",
+    description: "The Kandy Esala Perahera is one of the oldest and grandest of all Buddhist festivals in Sri Lanka, featuring dancers, jugglers, musicians, fire-breathers, and lavishly decorated elephants.",
+    organizerId: 1,
+    status: "approved",
+    ticketTypes: [
+      { name: "General Admission", price: 3500, available: 200 },
+      { name: "VIP Seating", price: 7500, available: 50 }
+    ]
   },
   {
     id: 2,
@@ -27,8 +49,14 @@ const events = [
     location: "Arugam Bay",
     image: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3VyZnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
     category: "Adventure",
-    price: "LKR 8,000",
-    description: "Join us for an unforgettable surfing weekend at Arugam Bay, one of the top surfing destinations in Sri Lanka. This event includes surf lessons, equipment rental, and beach parties."
+    price: "From LKR 8,000",
+    description: "Join us for an unforgettable surfing weekend at Arugam Bay, one of the top surfing destinations in Sri Lanka. This event includes surf lessons, equipment rental, and beach parties.",
+    organizerId: 2,
+    status: "approved",
+    ticketTypes: [
+      { name: "Basic Package", price: 8000, available: 30 },
+      { name: "Premium Package", price: 15000, available: 10 }
+    ]
   },
   {
     id: 3,
@@ -37,8 +65,13 @@ const events = [
     location: "Colombo",
     image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c3JpJTIwbGFua2ElMjBmb29kfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
     category: "Culinary",
-    price: "LKR 2,500",
-    description: "Learn how to cook traditional Sri Lankan cuisine from expert local chefs. Take home recipes and skills to recreate authentic flavors."
+    price: "From LKR 2,500",
+    description: "Learn how to cook traditional Sri Lankan cuisine from expert local chefs. Take home recipes and skills to recreate authentic flavors.",
+    organizerId: 1,
+    status: "approved",
+    ticketTypes: [
+      { name: "Cooking Class", price: 2500, available: 15 }
+    ]
   },
   {
     id: 4,
@@ -47,8 +80,14 @@ const events = [
     location: "Nuwara Eliya",
     image: "https://images.unsplash.com/photo-1576826244583-37e71b99fe8a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHRlYSUyMHBsYW50YXRpb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
     category: "Cultural",
-    price: "LKR 4,000",
-    description: "Explore the lush tea plantations of Nuwara Eliya, learn about the tea-making process, and taste some of the world's finest Ceylon tea varieties."
+    price: "From LKR 4,000",
+    description: "Explore the lush tea plantations of Nuwara Eliya, learn about the tea-making process, and taste some of the world's finest Ceylon tea varieties.",
+    organizerId: 3,
+    status: "approved",
+    ticketTypes: [
+      { name: "Standard Tour", price: 4000, available: 40 },
+      { name: "Premium Tour with Tea Tasting", price: 6500, available: 20 }
+    ]
   },
   {
     id: 5,
@@ -57,8 +96,15 @@ const events = [
     location: "Colombo",
     image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bXVzaWMlMjBmZXN0aXZhbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
     category: "Music",
-    price: "LKR 6,500",
-    description: "The biggest music festival in Sri Lanka featuring local and international artists performing across multiple stages in the heart of Colombo."
+    price: "From LKR 6,500",
+    description: "The biggest music festival in Sri Lanka featuring local and international artists performing across multiple stages in the heart of Colombo.",
+    organizerId: 2,
+    status: "approved",
+    ticketTypes: [
+      { name: "1-Day Pass", price: 6500, available: 500 },
+      { name: "2-Day Pass", price: 10000, available: 300 },
+      { name: "VIP 2-Day Pass", price: 18000, available: 50 }
+    ]
   },
   {
     id: 6,
@@ -67,8 +113,15 @@ const events = [
     location: "Yala National Park",
     image: "https://images.unsplash.com/photo-1590419690008-905895e8fe0d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8c3JpJTIwbGFua2ElMjBzYWZhcml8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
     category: "Adventure",
-    price: "LKR 12,000",
-    description: "Experience the diverse wildlife of Sri Lanka with guided safari tours in Yala National Park, home to leopards, elephants, and hundreds of bird species."
+    price: "From LKR 12,000",
+    description: "Experience the diverse wildlife of Sri Lanka with guided safari tours in Yala National Park, home to leopards, elephants, and hundreds of bird species.",
+    organizerId: 3,
+    status: "approved",
+    ticketTypes: [
+      { name: "Basic Safari Package", price: 12000, available: 20 },
+      { name: "Deluxe Safari Package", price: 20000, available: 10 },
+      { name: "Premium Safari Package", price: 35000, available: 5 }
+    ]
   }
 ];
 
@@ -80,15 +133,86 @@ const suggestedPlaces = [
   { name: "Minneriya National Park", distance: "15 km" }
 ];
 
+interface TicketSelection {
+  type: string;
+  price: number;
+  quantity: number;
+}
+
 const EventPage = () => {
   const [filteredEvents, setFilteredEvents] = useState(events);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState<typeof events[0] | null>(null);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [ticketSelections, setTicketSelections] = useState<TicketSelection[]>([]);
+  const { toast } = useToast();
   
   const handleFilter = (filters) => {
     // In a real app, this would filter based on the provided criteria
     console.log("Filtering with:", filters);
     // Simulate filtering for now
     setFilteredEvents(events);
+  };
+  
+  const handleEventSelect = (event) => {
+    setSelectedEvent(event);
+    // Initialize ticket selections based on available ticket types
+    if (event.ticketTypes) {
+      setTicketSelections(
+        event.ticketTypes.map(type => ({
+          type: type.name,
+          price: type.price,
+          quantity: 0
+        }))
+      );
+    }
+    setShowCheckout(true);
+  };
+  
+  const handleTicketChange = (typeName: string, quantity: number) => {
+    setTicketSelections(prev => 
+      prev.map(ticket => 
+        ticket.type === typeName ? {...ticket, quantity} : ticket
+      )
+    );
+  };
+  
+  const getTotalCost = () => {
+    const subtotal = ticketSelections.reduce(
+      (sum, ticket) => sum + (ticket.price * ticket.quantity), 0
+    );
+    const serviceFee = subtotal * 0.05; // 5% service fee
+    return {
+      subtotal,
+      serviceFee,
+      total: subtotal + serviceFee
+    };
+  };
+  
+  const handleCheckout = () => {
+    const { total } = getTotalCost();
+    if (total === 0) {
+      toast({
+        title: "No tickets selected",
+        description: "Please select at least one ticket to proceed",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Here you would typically redirect to a payment gateway or process payment
+    toast({
+      title: "Processing payment",
+      description: `Total: LKR ${total.toFixed(2)}`,
+    });
+    
+    // Simulate successful payment
+    setTimeout(() => {
+      toast({
+        title: "Payment successful!",
+        description: "Your tickets have been sent to your email",
+      });
+      setShowCheckout(false);
+    }, 2000);
   };
   
   return (
@@ -121,7 +245,7 @@ const EventPage = () => {
                 <EventCard 
                   key={event.id} 
                   event={event} 
-                  onSelect={() => setSelectedEvent(event)} 
+                  onSelect={() => handleEventSelect(event)} 
                 />
               ))}
             </div>
@@ -142,6 +266,87 @@ const EventPage = () => {
           </div>
         </section>
       </main>
+      
+      {/* Checkout Dialog */}
+      <Dialog open={showCheckout} onOpenChange={setShowCheckout}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Ticket className="h-5 w-5" />
+              Event Tickets
+            </DialogTitle>
+            <DialogDescription>
+              {selectedEvent?.title} - {selectedEvent?.date}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4">
+            {selectedEvent?.ticketTypes?.map((ticket, idx) => (
+              <div key={idx} className="flex justify-between items-center py-2 border-b">
+                <div>
+                  <p className="font-medium">{ticket.name}</p>
+                  <p className="text-sm text-gray-500">LKR {ticket.price}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button 
+                    className="w-8 h-8 flex items-center justify-center border rounded-full"
+                    onClick={() => {
+                      const curr = ticketSelections.find(t => t.type === ticket.name)?.quantity || 0;
+                      handleTicketChange(ticket.name, Math.max(0, curr - 1));
+                    }}
+                  >
+                    -
+                  </button>
+                  <span className="w-6 text-center">
+                    {ticketSelections.find(t => t.type === ticket.name)?.quantity || 0}
+                  </span>
+                  <button 
+                    className="w-8 h-8 flex items-center justify-center border rounded-full"
+                    onClick={() => {
+                      const curr = ticketSelections.find(t => t.type === ticket.name)?.quantity || 0;
+                      if (curr < 4) { // Max 4 tickets
+                        handleTicketChange(ticket.name, curr + 1);
+                      }
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            ))}
+            
+            <div className="mt-4 space-y-1">
+              <div className="flex justify-between text-sm">
+                <span>Subtotal:</span>
+                <span>LKR {getTotalCost().subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Service Fee (5%):</span>
+                <span>LKR {getTotalCost().serviceFee.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between font-bold pt-2 border-t mt-2">
+                <span>Total:</span>
+                <span>LKR {getTotalCost().total.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowCheckout(false)}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleCheckout} 
+              className="bg-[#1E90FF] hover:bg-blue-600"
+            >
+              Proceed to Payment
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       
       <Footer />
     </div>
