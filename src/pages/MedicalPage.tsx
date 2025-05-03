@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -84,13 +85,26 @@ const MedicalPage = () => {
             professionals is ready to help you anytime, anywhere in Sri Lanka.
           </p>
           
-          <Button 
-            onClick={handleEmergencyCall}
-            className="emergency-btn text-lg animate-pulse-gentle"
-            size="lg"
-          >
-            🚑 Emergency Help (Click Here)
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button 
+              onClick={handleEmergencyCall}
+              className="emergency-btn text-lg animate-pulse-gentle"
+              size="lg"
+            >
+              🚑 Emergency Help (Click Here)
+            </Button>
+            
+            <Link to="/doctor-login">
+              <Button 
+                variant="outline" 
+                className="text-white border-white hover:bg-white/20 text-lg"
+                size="lg"
+              >
+                <User className="mr-2 h-5 w-5" /> 
+                Doctor Login
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
       
