@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Calendar, MessageSquare, Video, Edit, DollarSign, FileText, User, ShieldCheck } from 'lucide-react';
 
-interface DoctorDashboardProps {
+export interface DoctorDashboardProps {
   doctor: {
     name: string;
     appointmentsToday: number;

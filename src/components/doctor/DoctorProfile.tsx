@@ -11,7 +11,7 @@ import { FileText, Upload, User, ShieldCheck, Languages, Award, CheckCircle, Hos
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Switch } from '@/components/ui/switch';
 
-interface DoctorProfileProps {
+export interface DoctorProfileProps {
   doctor: {
     name: string;
     photo: string;

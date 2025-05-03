@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-interface DoctorHeaderProps {
+export interface DoctorHeaderProps {
   doctor: {
     name: string;
     photo: string;

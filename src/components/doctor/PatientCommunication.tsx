@@ -1,307 +1,352 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { MessageSquare, Video, Phone, User, Clock, Shield, Send, Paperclip, Calendar, Search } from 'lucide-react';
+import { MessageSquare, Search, Send, Phone, Video, Clock, AlertCircle, User, Calendar } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-interface PatientCommunicationProps {
+export interface PatientCommunicationProps {
   doctor: {
     name: string;
-    photo: string;
+    unreadMessages: number;
   };
 }
 
 const PatientCommunication = ({ doctor }: PatientCommunicationProps) => {
   const { toast } = useToast();
-  const [currentTab, setCurrentTab] = useState('inbox');
-  const [messageText, setMessageText] = useState('');
+  const [activeTab, setActiveTab] = useState('messages');
+  const [searchQuery, setSearchQuery] = useState('');
   
-  // Mock patients data
+  // Mock patient data
   const patients = [
     {
       id: 1,
-      name: "Sarah Johnson",
-      photo: null,
+      name: "Amal Fernando",
+      age: 42,
+      photo: "/lovable-uploads/c0345ab3-5c66-4001-8dca-4164369fc2cf.png",
+      lastMessage: "Thank you doctor, I'll follow your advice.",
+      lastMessageTime: "10:23 AM",
       unread: true,
-      lastMessage: "Thanks doctor, I'll schedule the follow-up appointment next week.",
-      lastMessageTime: "Today, 11:23 AM",
-      isUrgent: false
+      status: "Scheduled",
+      nextAppointment: "Today, 3:30 PM",
+      condition: "Hypertension"
     },
     {
       id: 2,
-      name: "Rajiv Kumar",
-      photo: null,
+      name: "Priya Mendis",
+      age: 35,
+      photo: "",
+      lastMessage: "When should I take the medication?",
+      lastMessageTime: "Yesterday",
       unread: true,
-      lastMessage: "The pain in my chest has increased since yesterday. Is this concerning?",
-      lastMessageTime: "Today, 09:45 AM",
-      isUrgent: true
+      status: "Follow-up",
+      nextAppointment: "Aug 24, 2:00 PM",
+      condition: "Diabetes Type 2"
     },
     {
       id: 3,
-      name: "Emma Wilson",
-      photo: null,
-      unread: false,
-      lastMessage: "I've sent you the lab results as requested.",
-      lastMessageTime: "Yesterday",
-      isUrgent: false
+      name: "Malik Jayawardena",
+      age: 58,
+      photo: "",
+      lastMessage: "I've uploaded my latest test results.",
+      lastMessageTime: "Aug 18",
+      unread: true,
+      status: "Urgent",
+      nextAppointment: "Aug 20, 9:00 AM",
+      condition: "Cardiac Arrhythmia"
     },
+    {
+      id: 4,
+      name: "Samantha Silva",
+      age: 29,
+      photo: "/lovable-uploads/c0345ab3-5c66-4001-8dca-4164369fc2cf.png",
+      lastMessage: "The symptoms have improved since last visit.",
+      lastMessageTime: "Aug 15",
+      unread: false,
+      status: "Completed",
+      nextAppointment: "Sep 15, 11:30 AM",
+      condition: "Migraine"
+    }
   ];
   
-  const [selectedPatient, setSelectedPatient] = useState(patients[0]);
+  // Mock messages for a selected patient
+  const messages = [
+    {
+      id: 1,
+      sender: "patient",
+      content: "Good morning doctor, I've been experiencing chest pain since yesterday evening.",
+      time: "9:45 AM",
+      read: true
+    },
+    {
+      id: 2,
+      sender: "doctor",
+      content: "Hello Mr. Fernando. Can you describe the pain? Is it sharp or dull? Does it radiate to your arm or jaw?",
+      time: "9:50 AM",
+      read: true
+    },
+    {
+      id: 3,
+      sender: "patient",
+      content: "It's a dull pain, mostly in the center of my chest. It doesn't radiate but gets worse when I exert myself.",
+      time: "9:55 AM",
+      read: true
+    },
+    {
+      id: 4,
+      sender: "doctor",
+      content: "I see. Have you taken your blood pressure medication as prescribed?",
+      time: "10:00 AM",
+      read: true
+    },
+    {
+      id: 5,
+      sender: "patient",
+      content: "Yes, I've been taking it regularly. My last reading was 145/90 this morning.",
+      time: "10:05 AM",
+      read: true
+    },
+    {
+      id: 6,
+      sender: "doctor",
+      content: "That's a bit elevated. I'd like you to come in for an ECG. Can you visit the clinic today?",
+      time: "10:10 AM",
+      read: true
+    },
+    {
+      id: 7,
+      sender: "patient",
+      content: "Yes, I can come in the afternoon. Would 3:30 PM work?",
+      time: "10:15 AM",
+      read: true
+    },
+    {
+      id: 8,
+      sender: "doctor",
+      content: "That works. I'll have my assistant schedule you in. In the meantime, take rest and avoid strenuous activities.",
+      time: "10:20 AM",
+      read: true
+    },
+    {
+      id: 9,
+      sender: "patient",
+      content: "Thank you doctor, I'll follow your advice.",
+      time: "10:23 AM",
+      read: false
+    }
+  ];
   
   const handleSendMessage = () => {
-    if (!messageText.trim()) return;
-    
     toast({
       title: "Message sent",
       description: "Your message has been sent to the patient",
     });
-    setMessageText('');
   };
   
-  const handleStartVideoCall = () => {
+  const handleStartCall = (type: string) => {
     toast({
-      title: "Starting video call",
-      description: `Initiating video call with ${selectedPatient.name}`,
+      title: `Starting ${type} call`,
+      description: `Initiating a ${type} call with the patient`,
     });
   };
   
-  const handlePatientSelect = (patient: any) => {
-    setSelectedPatient(patient);
-  };
-  
-  // Sample messages for the selected patient
-  const patientMessages = [
-    { sender: 'patient', content: 'Hello Dr. Perera, I\'ve been having some chest pain lately.', time: '11:20 AM' },
-    { sender: 'doctor', content: 'Hello Sarah, I\'m sorry to hear that. Can you describe the pain in more detail? When does it occur and how severe is it?', time: '11:22 AM' },
-    { sender: 'patient', content: 'It\'s a sharp pain on the left side of my chest, usually when I exert myself. It started about a week ago.', time: '11:25 AM' },
-    { sender: 'doctor', content: 'Thank you for the description. Have you had any shortness of breath, dizziness, or sweating along with the pain?', time: '11:27 AM' },
-    { sender: 'patient', content: 'Yes, I do feel a bit breathless when the pain comes.', time: '11:28 AM' },
-    { sender: 'doctor', content: 'I think we should schedule you for an in-person examination as soon as possible. This could be something we need to check right away.', time: '11:30 AM' },
-    { sender: 'patient', content: 'Thanks doctor, I\'ll schedule the follow-up appointment next week.', time: '11:32 AM' },
-  ];
-  
-  // Quick replies
-  const quickReplies = [
-    "Please describe your symptoms in detail.",
-    "I recommend booking a video consultation for better assessment.",
-    "Please upload your recent lab reports.",
-    "How are you feeling after starting the medication?"
-  ];
+  const filteredPatients = patients.filter(patient => 
+    patient.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    patient.condition.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Patient Communication</h1>
-        <div className="flex space-x-2">
-          <Button size="sm" variant="outline">
-            <Calendar className="h-4 w-4 mr-2" />
-            Schedule
-          </Button>
-          <Button size="sm" variant="secondary">
-            <Shield className="h-4 w-4 mr-2" />
-            Privacy Settings
-          </Button>
-        </div>
-      </div>
+      <h1 className="text-2xl font-bold text-gray-800">Patient Communications</h1>
       
-      <div className="h-[600px] bg-white border rounded-lg overflow-hidden">
-        <Tabs 
-          defaultValue="inbox" 
-          value={currentTab} 
-          onValueChange={setCurrentTab} 
-          className="h-full flex flex-col"
-        >
-          <div className="border-b px-4">
-            <TabsList className="h-14">
-              <TabsTrigger value="inbox" className="data-[state=active]:bg-blue-50">
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Inbox
-              </TabsTrigger>
-              <TabsTrigger value="scheduled" className="data-[state=active]:bg-blue-50">
-                <Calendar className="h-4 w-4 mr-2" />
-                Scheduled
-              </TabsTrigger>
-            </TabsList>
-          </div>
-          
-          <div className="flex-1 overflow-hidden">
-            <TabsContent value="inbox" className="h-full m-0">
-              <div className="flex h-full">
-                {/* Patient List */}
-                <div className="w-1/3 border-r overflow-auto">
-                  <div className="p-3 border-b">
-                    <div className="relative">
-                      <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <Input placeholder="Search patients..." className="pl-8" />
-                    </div>
-                  </div>
-                  
-                  <div className="divide-y">
-                    {patients.map((patient) => (
-                      <div 
-                        key={patient.id}
-                        className={`p-3 hover:bg-gray-50 cursor-pointer ${selectedPatient.id === patient.id ? 'bg-blue-50' : ''}`}
-                        onClick={() => handlePatientSelect(patient)}
-                      >
-                        <div className="flex items-start space-x-2">
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src={patient.photo || undefined} alt={patient.name} />
-                            <AvatarFallback>{patient.name.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                          
-                          <div className="flex-1 min-w-0">
-                            <div className="flex justify-between items-center mb-1">
-                              <p className={`text-sm font-medium truncate ${patient.unread ? 'text-black' : 'text-gray-700'}`}>
-                                {patient.name}
-                              </p>
-                              <span className="text-xs text-gray-500">{patient.lastMessageTime}</span>
-                            </div>
-                            
-                            <div className="flex items-center">
-                              {patient.isUrgent && (
-                                <Badge variant="destructive" className="mr-1 h-1.5 w-1.5 rounded-full p-0"></Badge>
-                              )}
-                              <p className={`text-xs truncate ${patient.unread ? 'font-medium text-gray-900' : 'text-gray-500'}`}>
-                                {patient.lastMessage}
-                              </p>
-                            </div>
+      <Tabs defaultValue="messages" value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-3 mb-4">
+          <TabsTrigger value="messages" className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            Messages
+            {doctor.unreadMessages > 0 && (
+              <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center">
+                {doctor.unreadMessages}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="appointments" className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            Appointments
+          </TabsTrigger>
+          <TabsTrigger value="records" className="flex items-center gap-2">
+            <User className="h-4 w-4" />
+            Patient Records
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="messages" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[600px]">
+            {/* Patient List */}
+            <Card className="md:col-span-1 overflow-hidden flex flex-col">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">Patients</CardTitle>
+                <div className="relative mt-2">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                  <Input 
+                    placeholder="Search patients..." 
+                    className="pl-8"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </CardHeader>
+              <CardContent className="flex-1 overflow-y-auto p-0">
+                <div className="divide-y">
+                  {filteredPatients.map(patient => (
+                    <div 
+                      key={patient.id} 
+                      className={`p-3 hover:bg-gray-50 cursor-pointer ${patient.id === 1 ? 'bg-blue-50' : ''}`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={patient.photo} alt={patient.name} />
+                          <AvatarFallback>{patient.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start">
+                            <p className="font-medium text-sm truncate">{patient.name}</p>
+                            <span className="text-xs text-gray-500">{patient.lastMessageTime}</span>
+                          </div>
+                          <p className="text-xs text-gray-600 truncate">{patient.lastMessage}</p>
+                          <div className="flex items-center mt-1">
+                            <Badge 
+                              variant={
+                                patient.status === "Urgent" ? "destructive" : 
+                                patient.status === "Scheduled" ? "default" :
+                                patient.status === "Follow-up" ? "secondary" : "outline"
+                              }
+                              className="text-[10px] h-5 px-1.5"
+                            >
+                              {patient.status}
+                            </Badge>
+                            <span className="text-[10px] text-gray-500 ml-2">{patient.condition}</span>
                           </div>
                         </div>
+                        {patient.unread && (
+                          <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
+                        )}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-                
-                {/* Chat Area */}
-                <div className="flex-1 flex flex-col h-full">
-                  {/* Chat Header */}
-                  <div className="p-3 border-b flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={selectedPatient.photo || undefined} alt={selectedPatient.name} />
-                        <AvatarFallback>{selectedPatient.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">{selectedPatient.name}</p>
-                        <p className="text-xs text-gray-500">Patient ID: #10045</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex space-x-2">
-                      <Button size="sm" variant="ghost" onClick={handleStartVideoCall}>
-                        <Video className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="ghost">
-                        <Phone className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" variant="ghost">
-                        <User className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  {/* Messages */}
-                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    <div className="text-center">
-                      <Badge variant="outline" className="text-xs bg-gray-100">
-                        Today
-                      </Badge>
-                    </div>
-                    
-                    {patientMessages.map((message, index) => (
-                      <div 
-                        key={index} 
-                        className={`flex ${message.sender === 'doctor' ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div 
-                          className={`max-w-[80%] rounded-lg p-3 ${
-                            message.sender === 'doctor' 
-                              ? 'bg-blue-500 text-white' 
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          <p className="text-sm">{message.content}</p>
-                          <p 
-                            className={`text-xs mt-1 text-right ${
-                              message.sender === 'doctor' ? 'text-blue-100' : 'text-gray-500'
-                            }`}
-                          >
-                            {message.time}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Quick Replies */}
-                  <div className="p-2 border-t bg-gray-50">
-                    <p className="text-xs text-gray-500 mb-2 px-2">Quick Replies:</p>
-                    <div className="flex flex-wrap gap-2 px-2">
-                      {quickReplies.map((reply, index) => (
-                        <Button 
-                          key={index} 
-                          variant="outline" 
-                          size="sm" 
-                          className="text-xs py-1 h-auto"
-                          onClick={() => setMessageText(reply)}
-                        >
-                          {reply}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Message Input */}
-                  <div className="p-3 border-t flex items-end">
-                    <Button variant="ghost" size="icon" className="flex-shrink-0">
-                      <Paperclip className="h-5 w-5 text-gray-500" />
-                    </Button>
-                    
-                    <div className="flex-1 mx-2">
-                      <Textarea 
-                        placeholder="Type your message..."
-                        value={messageText}
-                        onChange={(e) => setMessageText(e.target.value)}
-                        className="min-h-[60px] max-h-[120px] resize-none"
-                      />
-                      <div className="text-xs text-gray-500 mt-1 flex items-center">
-                        <Shield className="h-3 w-3 mr-1" />
-                        <span>End-to-end encrypted</span>
-                      </div>
-                    </div>
-                    
-                    <Button 
-                      className="flex-shrink-0" 
-                      size="sm"
-                      onClick={handleSendMessage}
-                      disabled={!messageText.trim()}
-                    >
-                      <Send className="h-4 w-4 mr-1" />
-                      Send
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
+              </CardContent>
+            </Card>
             
-            <TabsContent value="scheduled" className="h-full m-0 p-4">
-              <div className="text-center h-full flex flex-col items-center justify-center space-y-3 text-gray-500">
-                <Calendar className="h-12 w-12" />
-                <h3 className="text-lg font-medium">Upcoming Appointments</h3>
-                <p className="text-sm">View and manage your scheduled consultations here.</p>
-                <Button className="mt-2">View Schedule</Button>
-              </div>
-            </TabsContent>
+            {/* Chat Area */}
+            <Card className="md:col-span-2 flex flex-col overflow-hidden">
+              <CardHeader className="pb-2 border-b">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-3">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={patients[0].photo} alt={patients[0].name} />
+                      <AvatarFallback>{patients[0].name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <CardTitle className="text-base">{patients[0].name}, {patients[0].age}</CardTitle>
+                      <CardDescription className="text-xs flex items-center">
+                        <Clock className="h-3 w-3 mr-1" />
+                        Next appointment: {patients[0].nextAppointment}
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="text-blue-600"
+                      onClick={() => handleStartCall('voice')}
+                    >
+                      <Phone className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="text-green-600"
+                      onClick={() => handleStartCall('video')}
+                    >
+                      <Video className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              
+              <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.map(message => (
+                  <div 
+                    key={message.id} 
+                    className={`flex ${message.sender === 'doctor' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div 
+                      className={`max-w-[80%] p-3 rounded-lg ${
+                        message.sender === 'doctor' 
+                          ? 'bg-blue-100 text-blue-900' 
+                          : 'bg-gray-100 text-gray-900'
+                      }`}
+                    >
+                      <p className="text-sm">{message.content}</p>
+                      <div className="flex items-center justify-end mt-1 space-x-1">
+                        <span className="text-xs text-gray-500">{message.time}</span>
+                        {message.sender === 'doctor' && (
+                          <span className="text-xs text-blue-500">
+                            {message.read ? 'Read' : 'Delivered'}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+              
+              <CardFooter className="p-3 border-t">
+                <div className="flex w-full space-x-2">
+                  <Textarea 
+                    placeholder="Type your message..." 
+                    className="min-h-[60px] flex-1"
+                  />
+                  <Button onClick={handleSendMessage}>
+                    <Send className="h-4 w-4" />
+                    <span className="sr-only">Send</span>
+                  </Button>
+                </div>
+              </CardFooter>
+            </Card>
           </div>
-        </Tabs>
-      </div>
+        </TabsContent>
+        
+        <TabsContent value="appointments">
+          <Card>
+            <CardHeader>
+              <CardTitle>Upcoming Appointments</CardTitle>
+              <CardDescription>Manage your scheduled patient appointments</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>Appointment management interface would be implemented here.</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="records">
+          <Card>
+            <CardHeader>
+              <CardTitle>Patient Records</CardTitle>
+              <CardDescription>Access and manage patient medical records</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>Patient records interface would be implemented here.</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

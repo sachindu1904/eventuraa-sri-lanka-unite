@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 
-interface DoctorPricingProps {
+export interface DoctorPricingProps {
   doctor: {
     videoConsultationFee: number;
     inPersonFee: number;
