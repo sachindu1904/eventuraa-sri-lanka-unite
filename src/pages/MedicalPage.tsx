@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -6,8 +5,26 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Check, MapPin, Star, ThermometerSun, Phone, Hospital, Search, ShieldCheck, Info, Calendar, User } from 'lucide-react';
+import { 
+  Check, 
+  MapPin, 
+  Star, 
+  ThermometerSun, 
+  Phone, 
+  Hospital, 
+  Search, 
+  ShieldCheck, 
+  Info, 
+  Calendar, 
+  User, 
+  Mail, 
+  CircleDollarSign, 
+  Shield, 
+  MessageCircle, 
+  Stethoscope 
+} from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -217,6 +234,7 @@ const MedicalPage = () => {
             {/* Doctor Card 1 */}
             <DoctorCard 
               name="Dr. Anusha Perera"
+              qualification="MBBS, MD"
               rating={4.8}
               specialization="Travel Medicine Specialist"
               languages={["English", "Sinhala", "Tamil"]}
@@ -225,24 +243,44 @@ const MedicalPage = () => {
               nextSlot="Today 4:30 PM"
               fee="LKR 3,500 ($12)"
               verified={true}
+              experience={15}
+              hospital="National Hospital of Sri Lanka"
+              regNo="SLMC 45632"
+              specialties={["Travel Vaccinations", "Food Poisoning", "Tropical Disease"]}
+              contacts={{
+                phone: "+94 77 123 4567",
+                email: "dr.anusha@eventuraa.lk",
+                whatsapp: "+94 77 123 4567"
+              }}
             />
             
             {/* Doctor Card 2 */}
             <DoctorCard 
               name="Dr. Rajiv Kumar"
+              qualification="MBBS, MD (Cardiology)"
               rating={4.6}
-              specialization="General Physician"
+              specialization="Cardiologist"
               languages={["English", "Sinhala"]}
               tags={["Speaks English", "Video Consultation", "24/7 Available"]}
               proximity="5km from your location (Colombo Fort)"
               nextSlot="Today 6:00 PM"
               fee="LKR 4,000 ($14)"
               verified={true}
+              experience={12}
+              hospital="Colombo South Teaching Hospital"
+              regNo="SLMC 48765"
+              specialties={["Heart Conditions", "Chest Pain", "Hypertension Management"]}
+              contacts={{
+                phone: "+94 77 234 5678",
+                email: "dr.rajiv@eventuraa.lk",
+                whatsapp: "+94 77 234 5678"
+              }}
             />
             
             {/* Doctor Card 3 */}
             <DoctorCard 
               name="Dr. Sarah Fernando"
+              qualification="MBBS, MD (Dermatology)"
               rating={4.9}
               specialization="Dermatologist"
               languages={["English", "Sinhala"]}
@@ -251,6 +289,39 @@ const MedicalPage = () => {
               nextSlot="Tomorrow 10:00 AM"
               fee="LKR 5,000 ($17)"
               verified={true}
+              experience={8}
+              hospital="Lady Ridgeway Hospital"
+              regNo="SLMC 52140"
+              specialties={["Skin Infections", "Allergic Reactions", "Sensitive Skin Issues"]}
+              contacts={{
+                phone: "+94 77 345 6789",
+                email: "dr.sarah@eventuraa.lk",
+                whatsapp: "+94 77 345 6789"
+              }}
+            />
+            
+            {/* Doctor Card 4 - Psychiatrist */}
+            <DoctorCard 
+              name="Dr. Nimal Jayasinghe"
+              qualification="MBBS, MD (Psychiatry)"
+              rating={4.7}
+              specialization="Psychiatrist"
+              languages={["English", "Sinhala", "Tamil"]}
+              tags={["Speaks English", "Private Consultations", "Confidential"]}
+              proximity="4km from your location (Colombo Fort)"
+              nextSlot="Today 7:30 PM"
+              fee="LKR 6,000 ($20)"
+              verified={true}
+              experience={20}
+              hospital="National Institute of Mental Health"
+              regNo="SLMC 38921"
+              specialties={["Anxiety Disorders", "Depression", "Substance Use Counseling"]}
+              contacts={{
+                phone: "+94 77 456 7890",
+                email: "dr.nimal@eventuraa.lk",
+                whatsapp: "+94 77 456 7890"
+              }}
+              isPsychiatry={true}
             />
           </div>
         </div>
@@ -309,17 +380,24 @@ const MedicalPage = () => {
   );
 };
 
-// Doctor Card Component
+// Enhanced Doctor Card Component
 const DoctorCard = ({ 
   name, 
+  qualification,
   rating, 
   specialization, 
   languages, 
   tags, 
   proximity, 
   nextSlot, 
-  fee, 
-  verified 
+  fee,
+  verified,
+  experience,
+  hospital,
+  regNo,
+  specialties,
+  contacts,
+  isPsychiatry = false
 }) => {
   const { toast } = useToast();
   
@@ -337,22 +415,55 @@ const DoctorCard = ({
     });
   };
   
+  const handleCallDoctor = () => {
+    toast({
+      title: "Connecting call",
+      description: `Calling ${name} through secure line`,
+    });
+  };
+  
+  const handleEmailDoctor = () => {
+    toast({
+      title: "Opening email",
+      description: `Preparing confidential email to ${name}`,
+    });
+  };
+  
+  // Dynamic styling based on doctor type
+  const specialtyBgColor = isPsychiatry ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800';
+  const specialtyIconColor = isPsychiatry ? 'text-purple-600' : 'text-blue-600';
+  
   return (
     <Card className="overflow-hidden transition-all duration-200 hover:shadow-lg border-gray-200">
       <CardContent className="p-0">
         <div className="flex flex-col md:flex-row">
-          {/* Left Side - Doctor Photo & Info */}
+          {/* Left Side - Enhanced Doctor Photo & Info */}
           <div className="w-full md:w-1/4 bg-gray-100 p-4 flex flex-col items-center">
             <div className="relative mb-2">
-              <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center">
+              <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center overflow-hidden">
                 <User size={40} className="text-gray-600" />
               </div>
               {verified && (
-                <div className="absolute bottom-0 right-0 bg-green-500 text-white p-1 rounded-full">
-                  <Check size={12} />
-                </div>
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <div className="absolute bottom-0 right-0 bg-green-500 text-white p-1 rounded-full cursor-help">
+                      <Check size={12} />
+                    </div>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-64">
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold">Verified Doctor</p>
+                      <p className="text-xs text-gray-500">
+                        {name} is verified by Sri Lanka Medical Council (SLMC)
+                      </p>
+                      <p className="text-xs text-gray-700">Reg No: {regNo}</p>
+                      <p className="text-xs text-gray-700">Verification Date: January 15, 2024</p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
               )}
             </div>
+            
             <div className="text-center">
               {verified && (
                 <div className="text-xs flex items-center justify-center mb-2 text-green-700">
@@ -367,19 +478,32 @@ const DoctorCard = ({
                   </span>
                 ))}
               </div>
+              <div className="text-sm text-gray-700 mb-1">
+                <span className="font-semibold">{experience} years</span> experience
+              </div>
+              <div className="text-xs text-gray-600">
+                {hospital}
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                SLMC Reg No: {regNo}
+              </div>
             </div>
           </div>
           
-          {/* Middle - Doctor Details */}
+          {/* Middle - Enhanced Doctor Details */}
           <div className="w-full md:w-1/2 p-4">
             <div className="flex items-center mb-1">
-              <h3 className="text-xl font-bold mr-2">{name}</h3>
+              <h3 className="text-xl font-bold font-display mr-2">{name}</h3>
+              <span className="text-sm text-gray-600">{qualification}</span>
+            </div>
+            <div className="flex items-center mb-2">
+              <p className={`${isPsychiatry ? 'text-purple-600' : 'text-blue-600'} font-medium mr-2`}>{specialization}</p>
               <div className="flex items-center text-yellow-500">
                 <Star size={16} className="fill-current" />
                 <span className="text-sm text-gray-700 ml-1">{rating}</span>
               </div>
             </div>
-            <p className="text-blue-600 font-medium mb-2">{specialization}</p>
+            
             <div className="flex flex-wrap gap-2 mb-3">
               {tags.map((tag, i) => (
                 <span key={i} className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">
@@ -387,29 +511,106 @@ const DoctorCard = ({
                 </span>
               ))}
             </div>
+            
+            {/* Specialties with icons */}
+            <div className="mb-3">
+              <p className="text-sm font-medium mb-1">Specialties:</p>
+              <ul className="space-y-1">
+                {specialties.map((specialty, i) => (
+                  <li key={i} className="flex items-center text-sm">
+                    {isPsychiatry ? (
+                      <Shield size={14} className="mr-1 text-purple-600" />
+                    ) : (
+                      <Stethoscope size={14} className="mr-1 text-blue-600" />
+                    )}
+                    <span>{specialty}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            {/* Secure Contact Methods */}
+            <div className="flex flex-wrap gap-3 mb-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center text-xs" 
+                onClick={handleCallDoctor}
+              >
+                <Phone size={14} className="mr-1 text-green-600" />
+                <span className="text-gray-800">{contacts.phone}</span>
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center text-xs"
+                onClick={handleEmailDoctor}
+              >
+                <Mail size={14} className="mr-1 text-blue-600" />
+                <span className="text-gray-800">{contacts.email}</span>
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center text-xs"
+              >
+                <MessageCircle size={14} className="mr-1 text-green-600" />
+                <span className="text-gray-800">WhatsApp</span>
+              </Button>
+            </div>
+            
             <p className="text-sm text-gray-600 flex items-center">
               <MapPin size={14} className="mr-1" />
               {proximity}
             </p>
           </div>
           
-          {/* Right Side - Booking */}
+          {/* Right Side - Dynamic Pricing */}
           <div className="w-full md:w-1/4 bg-gray-50 p-4 flex flex-col justify-between">
             <div>
               <p className="text-sm text-gray-700 mb-1">Next available:</p>
               <p className="font-medium text-green-600 mb-3">{nextSlot}</p>
-              <p className="text-lg font-bold">{fee}</p>
+              
+              {/* Dynamic Pricing with tooltip */}
+              <div className="relative mb-2">
+                <h4 className="text-lg font-bold flex items-center">
+                  {fee}
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <CircleDollarSign size={16} className="ml-1 text-gray-500 cursor-help" />
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-64">
+                      <div className="space-y-2">
+                        <p className="text-sm font-semibold">Channeling Fee Only</p>
+                        <p className="text-xs text-gray-500">
+                          This fee covers the initial consultation only. Additional charges may apply based on treatment needed.
+                        </p>
+                        <ul className="text-xs list-disc pl-4 space-y-1">
+                          <li>Medication costs extra</li>
+                          <li>Lab tests not included</li>
+                          <li>Follow-ups may have reduced rates</li>
+                        </ul>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                </h4>
+                <p className="text-xs text-gray-500">Channeling fee only</p>
+              </div>
             </div>
             <div className="space-y-2 mt-4">
               <Button 
-                className="w-full bg-green-600 hover:bg-green-700" 
+                className={`w-full ${isPsychiatry ? 'bg-purple-600 hover:bg-purple-700' : 'bg-green-600 hover:bg-green-700'}`}
                 onClick={handleBookNow}
               >
                 Book Now
               </Button>
               <Button 
                 variant="outline" 
-                className="w-full text-blue-600 border-blue-600 hover:bg-blue-50" 
+                className={`w-full ${isPsychiatry 
+                  ? 'text-purple-600 border-purple-600 hover:bg-purple-50' 
+                  : 'text-blue-600 border-blue-600 hover:bg-blue-50'}`}
                 onClick={handleChatFirst}
               >
                 Chat First
