@@ -178,8 +178,8 @@ const HotelListPage = () => {
         <div className="relative">
           <div className="absolute inset-0 bg-black/40 z-0">
             <img 
-              src="/lovable-uploads/0c38344b-f01a-400f-9dec-0f7f75b5d3a7.png" 
-              alt="Luxury infinity pool with mountain view"
+              src="/lovable-uploads/a2effcba-e241-46f7-908d-8df11b65d7fd.png" 
+              alt="Luxury infinity pool with forest view at sunset"
               className="w-full h-full object-cover"
             />
           </div>
@@ -494,3 +494,4 @@ const HotelListPage = () => {
 };
 
 export default HotelListPage;
+
