@@ -6,7 +6,7 @@ import HotelCard from '@/components/hotel/HotelCard';
 import HotelFilters from '@/components/hotel/HotelFilters';
 import HotelMap from '@/components/hotel/HotelMap';
 import { Button } from '@/components/ui/button';
-import { Star, Wifi, Pool, UtensilsCrossed, Shield, CreditCard, ThumbsUp } from 'lucide-react';
+import { Star, Wifi, UtensilsCrossed, Shield, CreditCard, ThumbsUp, Bath } from 'lucide-react';
 
 const HotelListPage = () => {
   const [showMap, setShowMap] = useState(false);
@@ -251,7 +251,7 @@ const HotelListPage = () => {
                     
                     <div className="flex items-center gap-3 mb-4">
                       <Wifi className="h-4 w-4 text-gray-500" />
-                      <Pool className="h-4 w-4 text-gray-500" />
+                      <Bath className="h-4 w-4 text-gray-500" />
                       <UtensilsCrossed className="h-4 w-4 text-gray-500" />
                     </div>
                     
