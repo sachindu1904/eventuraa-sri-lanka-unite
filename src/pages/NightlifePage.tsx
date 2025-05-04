@@ -288,17 +288,26 @@ const NightlifePage = () => {
       <Header />
       
       <main className="flex-grow">
-        {/* Hero Banner */}
-        <div className="relative h-64 bg-gradient-to-r from-gray-900 to-purple-900 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/30"></div>
+        {/* Hero Banner - Updated with the new nightclub image */}
+        <div className="relative h-96 flex items-center justify-center">
+          <img 
+            src="/lovable-uploads/d60073b8-962d-45d8-8047-f94815d79b13.png" 
+            alt="Nightclub with confetti and crowd" 
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-purple-900/60"></div>
           <div className="relative z-10 text-center px-4">
             <div className="flex items-center gap-3 justify-center mb-4">
               <MartiniIcon className="h-8 w-8 text-eventuraa-orange" />
               <Music className="h-6 w-6 text-eventuraa-blue" />
               <PartyPopper className="h-7 w-7 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-white font-display mb-2">Nightlife in Sri Lanka</h1>
-            <p className="text-white text-xl">Discover the best clubs, bars, and party organizers</p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white font-display mb-2">
+              Nightlife in Sri Lanka
+            </h1>
+            <p className="text-white text-xl md:text-2xl max-w-3xl mx-auto">
+              Discover the best clubs, bars, and party organizers
+            </p>
           </div>
         </div>
         
