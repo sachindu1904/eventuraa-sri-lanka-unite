@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Music, Search, Ticket, X } from 'lucide-react';
+import { Calendar, MapPin, Music, Search, Ticket, X, Star } from 'lucide-react';
 import EventSearch from '@/components/EventSearch';
 import EventCard from '@/components/EventCard';
 import EventSuggestions from '@/components/EventSuggestions';
@@ -220,12 +220,61 @@ const EventPage = () => {
       <Header />
       
       <main className="flex-grow">
-        {/* Hero Banner */}
-        <div className="relative h-64 bg-gradient-to-r from-[#1E90FF] to-[#FFA500] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/30"></div>
-          <div className="relative z-10 text-center">
-            <h1 className="text-4xl font-bold text-white font-display">Discover Exciting Events</h1>
-            <p className="text-white text-xl mt-2">Find and book the best experiences in Sri Lanka</p>
+        {/* Enhanced Hero Banner */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-black/50 z-0">
+            <img 
+              src="/lovable-uploads/4d68e596-671d-4536-b657-819dfcce57a8.png" 
+              alt="Celebration with champagne and sparklers"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          <div className="relative z-10 max-w-7xl mx-auto px-4 py-32 sm:px-6 lg:px-8">
+            <div className="md:w-2/3 lg:w-1/2">
+              {/* Event Category Badge */}
+              <div className="flex items-center mb-4">
+                <span className="bg-eventuraa-orange text-xs font-semibold px-3 py-1 rounded-full text-white">
+                  Events & Experiences
+                </span>
+                <div className="flex items-center ml-4">
+                  <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                  <span className="ml-1 text-white">4.8 (120 reviews)</span>
+                </div>
+              </div>
+
+              {/* Event Title */}
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight text-white">
+                Discover Exciting Events in Sri Lanka
+              </h1>
+              
+              {/* Quote */}
+              <p className="text-xl md:text-2xl text-white italic mb-8 font-light">
+                "Take memories, leave footprints."
+              </p>
+
+              {/* Meta Information */}
+              <div className="flex flex-wrap gap-6 mb-8">
+                <div className="flex items-center text-white">
+                  <MapPin className="h-6 w-6 mr-2" />
+                  <span>Multiple Locations, Sri Lanka</span>
+                </div>
+                <div className="flex items-center text-white">
+                  <Calendar className="h-6 w-6 mr-2" />
+                  <span>Year-round experiences</span>
+                </div>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button className="bg-eventuraa-orange hover:bg-orange-600 px-8 py-6 rounded-lg font-bold text-lg h-auto">
+                  Explore Events
+                </Button>
+                <Button className="bg-white/20 hover:bg-white/30 px-8 py-6 rounded-lg font-bold text-lg transition-colors border border-white/30 h-auto">
+                  Share Experiences
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
         
