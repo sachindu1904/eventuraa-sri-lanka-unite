@@ -35,6 +35,11 @@ const Header = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/hidden-gems" className="text-gray-600 hover:text-gray-800">
+                  Hidden Gems
+                </Link>
+              </li>
+              <li>
                 <Link to="/medical" className="text-gray-600 hover:text-gray-800">
                   Medical
                 </Link>

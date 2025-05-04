@@ -17,6 +17,7 @@ import DoctorLoginPage from "./pages/DoctorLoginPage";
 import DoctorPortal from "./pages/DoctorPortal";
 import OrganizerLoginPage from "./pages/OrganizerLoginPage";
 import OrganizerPortal from "./pages/OrganizerPortal";
+import HiddenGemsPage from "./pages/HiddenGemsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/organizer-portal/*" element={<OrganizerPortal />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/hidden-gems" element={<HiddenGemsPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
