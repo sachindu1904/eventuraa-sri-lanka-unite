@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageSquare, Flag, Check, Clock, Star } from 'lucide-react';
-import { toast } from '@/components/ui/sonner';
+import { MessageSquare, Flag, Check, Clock, Star, Award } from 'lucide-react';
+import { toast } from 'sonner';
 
 const ReviewManagement: React.FC = () => {
   const [activeTab, setActiveTab] = useState('all');
@@ -35,7 +35,7 @@ const ReviewManagement: React.FC = () => {
       rating: 5,
       date: '2023-06-01',
       content: 'The villa was absolutely stunning! The views of the mountains from our balcony were breathtaking. Our host was incredibly welcoming and helped us arrange a tuk-tuk tour of the area. The breakfast was delicious with fresh local fruits. Will definitely return!',
-      response: 'Thank you for your lovely review, Sarah! We're so glad you enjoyed the views and our tuk-tuk tour. We look forward to welcoming you back soon!',
+      response: "Thank you for your lovely review, Sarah! We're so glad you enjoyed the views and our tuk-tuk tour. We look forward to welcoming you back soon!",
       status: 'responded',
       listing: 'Ella Forest Retreat',
     },
@@ -54,7 +54,7 @@ const ReviewManagement: React.FC = () => {
       guest: 'Elena Rodriguez',
       rating: 5,
       date: '2023-05-20',
-      content: 'Our cooking class was the highlight of our trip! The chef was patient and taught us authentic Sri Lankan curry recipes that I can't wait to try at home. The restaurant atmosphere was so charming too.',
+      content: "Our cooking class was the highlight of our trip! The chef was patient and taught us authentic Sri Lankan curry recipes that I can't wait to try at home. The restaurant atmosphere was so charming too.",
       response: null,
       status: 'pending',
       listing: 'Spice Garden Restaurant',
