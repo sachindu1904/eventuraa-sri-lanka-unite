@@ -57,6 +57,13 @@ const Header = () => {
           </div>
         </div>
       </div>
+      <div className="bg-eventuraa-yellow py-1 text-center text-sm">
+        <div className="container-custom">
+          <p className="text-eventuraa-orange font-medium">
+            <Link to="/hidden-gems-owner-login" className="underline">Property Owner?</Link> List your Hidden Gem and earn with just 5-10% commission
+          </p>
+        </div>
+      </div>
     </header>
   );
 };
