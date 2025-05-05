@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Music, Search, Ticket, X, Star } from 'lucide-react';
+import { Calendar, MapPin, Music, Search, Ticket, X, Star, Clock, Users, DollarSign, Tag } from 'lucide-react';
 import EventSearch from '@/components/EventSearch';
 import EventCard from '@/components/EventCard';
 import EventSuggestions from '@/components/EventSuggestions';
@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
+import ReviewSystem from '@/components/ReviewSystem';
 
 // User role enum (for future use)
 enum UserRole {
@@ -40,7 +42,18 @@ const events = [
     ticketTypes: [
       { name: "General Admission", price: 3500, available: 200 },
       { name: "VIP Seating", price: 7500, available: 50 }
-    ]
+    ],
+    highlights: [
+      "Traditional dance performances",
+      "Decorated elephants procession",
+      "Cultural music ensembles",
+      "Religious ceremonies"
+    ],
+    organizer: {
+      name: "Kandy Cultural Department",
+      rating: 4.8,
+      events: 24
+    }
   },
   {
     id: 2,
@@ -144,6 +157,7 @@ const EventPage = () => {
   const [selectedEvent, setSelectedEvent] = useState<typeof events[0] | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
   const [ticketSelections, setTicketSelections] = useState<TicketSelection[]>([]);
+  const [activeTab, setActiveTab] = useState('details');
   const { toast } = useToast();
   
   const handleFilter = (filters) => {
@@ -234,7 +248,7 @@ const EventPage = () => {
             <div className="md:w-2/3 lg:w-1/2">
               {/* Event Category Badge */}
               <div className="flex items-center mb-4">
-                <span className="bg-eventuraa-orange text-xs font-semibold px-3 py-1 rounded-full text-white">
+                <span className="bg-[#FF7F2A] text-xs font-semibold px-3 py-1 rounded-full text-white">
                   Events & Experiences
                 </span>
                 <div className="flex items-center ml-4">
@@ -244,7 +258,7 @@ const EventPage = () => {
               </div>
 
               {/* Event Title */}
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight text-white">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight text-white font-display">
                 Discover Exciting Events in Sri Lanka
               </h1>
               
@@ -267,7 +281,7 @@ const EventPage = () => {
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="bg-eventuraa-orange hover:bg-orange-600 px-8 py-6 rounded-lg font-bold text-lg h-auto">
+                <Button className="bg-[#FF5A5F] hover:bg-red-500 px-8 py-6 rounded-lg font-bold text-lg h-auto">
                   Explore Events
                 </Button>
                 <Button className="bg-white/20 hover:bg-white/30 px-8 py-6 rounded-lg font-bold text-lg transition-colors border border-white/30 h-auto">
@@ -286,9 +300,9 @@ const EventPage = () => {
         </div>
         
         {/* Event Cards */}
-        <section className="py-12 bg-gray-50">
+        <section className="py-12 bg-[#F5F2E9]">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold font-display mb-8 text-center">Featured Events</h2>
+            <h2 className="text-3xl font-bold font-display mb-8 text-center text-[#1A3A63]">Featured Events</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredEvents.map((event) => (
                 <EventCard 
@@ -301,6 +315,158 @@ const EventPage = () => {
           </div>
         </section>
         
+        {/* Event Detail View - Would be shown when an event is selected */}
+        {selectedEvent && (
+          <section className="py-12 bg-white">
+            <div className="container mx-auto px-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Main Content */}
+                <div className="lg:col-span-2">
+                  <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img 
+                      src={selectedEvent.image} 
+                      alt={selectedEvent.title} 
+                      className="w-full h-64 object-cover"
+                    />
+                    
+                    <div className="p-6">
+                      <div className="flex flex-wrap justify-between items-start mb-4">
+                        <div>
+                          <Badge className="mb-2 bg-[#FF7F2A] text-white">
+                            {selectedEvent.category}
+                          </Badge>
+                          <h1 className="text-2xl font-bold font-display text-[#1A3A63]">
+                            {selectedEvent.title}
+                          </h1>
+                        </div>
+                        <div className="text-[#FF5A5F] font-bold">
+                          {selectedEvent.price}
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-4 mb-6 text-gray-600">
+                        <div className="flex items-center">
+                          <Calendar className="h-5 w-5 mr-2 text-[#1A3A63]" />
+                          {selectedEvent.date}
+                        </div>
+                        <div className="flex items-center">
+                          <MapPin className="h-5 w-5 mr-2 text-[#1A3A63]" />
+                          {selectedEvent.location}
+                        </div>
+                        {selectedEvent.organizer && (
+                          <div className="flex items-center">
+                            <Users className="h-5 w-5 mr-2 text-[#1A3A63]" />
+                            <span>Organizer: {selectedEvent.organizer.name}</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="mb-6">
+                        <h2 className="text-lg font-semibold mb-2 text-[#1A3A63]">About This Event</h2>
+                        <p className="text-gray-700">{selectedEvent.description}</p>
+                      </div>
+                      
+                      {selectedEvent.highlights && (
+                        <div className="mb-6">
+                          <h2 className="text-lg font-semibold mb-2 text-[#1A3A63]">Event Highlights</h2>
+                          <ul className="list-disc list-inside text-gray-700">
+                            {selectedEvent.highlights.map((highlight, idx) => (
+                              <li key={idx}>{highlight}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={() => setShowCheckout(true)}
+                          className="bg-[#FF5A5F] hover:bg-red-500 text-white"
+                        >
+                          <Ticket className="h-5 w-5 mr-2" />
+                          Buy Tickets
+                        </Button>
+                        <Button variant="outline">
+                          Share Event
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Reviews Section */}
+                  <div className="mt-8">
+                    <ReviewSystem 
+                      venueId={selectedEvent.id.toString()} 
+                      venueName={selectedEvent.title} 
+                    />
+                  </div>
+                </div>
+                
+                {/* Sidebar */}
+                <div className="lg:col-span-1">
+                  {/* Organizer */}
+                  {selectedEvent.organizer && (
+                    <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                      <h2 className="text-lg font-semibold mb-3 text-[#1A3A63]">Event Organizer</h2>
+                      <div className="flex items-center mb-3">
+                        <div className="bg-[#1A3A63] text-white rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                          {selectedEvent.organizer.name.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="font-semibold">{selectedEvent.organizer.name}</p>
+                          <div className="flex items-center">
+                            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                            <span className="text-sm text-gray-600 ml-1">{selectedEvent.organizer.rating}/5</span>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Organizer of {selectedEvent.organizer.events} events
+                      </p>
+                      <Button variant="outline" className="w-full">
+                        Contact Organizer
+                      </Button>
+                    </div>
+                  )}
+                  
+                  {/* Location */}
+                  <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 className="text-lg font-semibold mb-3 text-[#1A3A63]">Event Location</h2>
+                    <div className="bg-gray-200 h-40 mb-3 rounded-md flex items-center justify-center">
+                      <MapPin className="h-8 w-8 text-gray-400" />
+                    </div>
+                    <p className="font-medium">{selectedEvent.location}</p>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Detailed directions will be provided after booking
+                    </p>
+                    <Button variant="outline" className="w-full">
+                      Get Directions
+                    </Button>
+                  </div>
+                  
+                  {/* Date & Time */}
+                  <div className="bg-white rounded-lg shadow-md p-6">
+                    <h2 className="text-lg font-semibold mb-3 text-[#1A3A63]">Date & Time</h2>
+                    <div className="flex items-start mb-3">
+                      <Calendar className="h-5 w-5 mr-3 mt-0.5 text-[#1A3A63]" />
+                      <div>
+                        <p className="font-medium">{selectedEvent.date}</p>
+                        <p className="text-sm text-gray-600">Multiple sessions available</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <Clock className="h-5 w-5 mr-3 mt-0.5 text-[#1A3A63]" />
+                      <div>
+                        <p className="font-medium">Event Duration</p>
+                        <p className="text-sm text-gray-600">2-3 hours (typical)</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+        
         {/* Event Suggestions */}
         <section className="py-12 bg-white">
           <div className="container mx-auto px-4">
@@ -309,7 +475,7 @@ const EventPage = () => {
         </section>
         
         {/* Location Suggestions */}
-        <section className="py-12 bg-gray-50">
+        <section className="py-12 bg-[#F5F2E9]">
           <div className="container mx-auto px-4">
             <LocationSuggestions places={suggestedPlaces} />
           </div>
@@ -389,7 +555,7 @@ const EventPage = () => {
             </Button>
             <Button 
               onClick={handleCheckout} 
-              className="bg-[#1E90FF] hover:bg-blue-600"
+              className="bg-[#FF5A5F] hover:bg-red-600"
             >
               Proceed to Payment
             </Button>
