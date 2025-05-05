@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -47,6 +46,16 @@ const HiddenGemsPage = () => {
             <CarouselItem>
               <div className="relative w-full h-[70vh]">
                 <img 
+                  src="/lovable-uploads/e1fbd532-d204-4205-88e4-3f33cdb60c7d.png" 
+                  alt="Nine Arch Bridge Railway in Ella" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
+              </div>
+            </CarouselItem>
+            <CarouselItem>
+              <div className="relative w-full h-[70vh]">
+                <img 
                   src="/lovable-uploads/fd6c4d0f-c13f-43ab-9a2a-8067717bbe38.png" 
                   alt="Secluded jungle villa" 
                   className="w-full h-full object-cover"
@@ -64,16 +73,6 @@ const HiddenGemsPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
               </div>
             </CarouselItem>
-            <CarouselItem>
-              <div className="relative w-full h-[70vh]">
-                <img 
-                  src="/lovable-uploads/d60073b8-962d-45d8-8047-f94815d79b13.png" 
-                  alt="Tuk-tuk ride through tea country" 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60"></div>
-              </div>
-            </CarouselItem>
           </CarouselContent>
           <CarouselPrevious className="left-4 bg-white/80" />
           <CarouselNext className="right-4 bg-white/80" />
@@ -86,7 +85,7 @@ const HiddenGemsPage = () => {
               <span className="block text-eventuraa-orange">Sri Lanka's Best Hidden Gems!</span>
             </h1>
             <p className="text-white/90 text-lg md:text-xl max-w-3xl mx-auto">
-              Budget-friendly stays, secret eateries & unforgettable local experiences.
+              Experience the iconic railway journey through lush hills and discover authentic stays, eateries & local adventures
             </p>
           </div>
           
