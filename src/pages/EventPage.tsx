@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import ReviewSystem from '@/components/ReviewSystem';
+import PaymentMethodSelector from '@/components/PaymentMethodSelector';
 
 // User role enum (for future use)
 enum UserRole {
@@ -152,12 +153,16 @@ interface TicketSelection {
   quantity: number;
 }
 
+type PaymentMethod = 'visa' | 'mastercard' | 'paypal' | 'ezCash';
+
 const EventPage = () => {
   const [filteredEvents, setFilteredEvents] = useState(events);
   const [selectedEvent, setSelectedEvent] = useState<typeof events[0] | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
   const [ticketSelections, setTicketSelections] = useState<TicketSelection[]>([]);
   const [activeTab, setActiveTab] = useState('details');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('visa');
+  const [checkoutStep, setCheckoutStep] = useState(1); // 1: Tickets, 2: Payment
   const { toast } = useToast();
   
   const handleFilter = (filters) => {
@@ -202,6 +207,10 @@ const EventPage = () => {
     };
   };
   
+  const handlePaymentMethodSelect = (method: PaymentMethod) => {
+    setPaymentMethod(method);
+  };
+  
   const handleCheckout = () => {
     const { total } = getTotalCost();
     if (total === 0) {
@@ -213,10 +222,15 @@ const EventPage = () => {
       return;
     }
     
-    // Here you would typically redirect to a payment gateway or process payment
+    if (checkoutStep === 1) {
+      setCheckoutStep(2);
+      return;
+    }
+    
+    // Process payment
     toast({
       title: "Processing payment",
-      description: `Total: LKR ${total.toFixed(2)}`,
+      description: `Total: LKR ${total.toFixed(2)} with ${paymentMethod}`,
     });
     
     // Simulate successful payment
@@ -226,6 +240,7 @@ const EventPage = () => {
         description: "Your tickets have been sent to your email",
       });
       setShowCheckout(false);
+      setCheckoutStep(1); // Reset for next purchase
     }, 2000);
   };
   
@@ -482,82 +497,137 @@ const EventPage = () => {
         </section>
       </main>
       
-      {/* Checkout Dialog */}
-      <Dialog open={showCheckout} onOpenChange={setShowCheckout}>
-        <DialogContent className="sm:max-w-[425px]">
+      {/* Checkout Dialog - Updated for payment functionality */}
+      <Dialog open={showCheckout} onOpenChange={(open) => {
+        if (!open) {
+          setCheckoutStep(1); // Reset to step 1 when dialog closes
+        }
+        setShowCheckout(open);
+      }}>
+        <DialogContent className={checkoutStep === 2 ? "sm:max-w-[550px]" : "sm:max-w-[425px]"}>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Ticket className="h-5 w-5" />
-              Event Tickets
+              {checkoutStep === 1 ? (
+                <>
+                  <Ticket className="h-5 w-5" />
+                  Event Tickets
+                </>
+              ) : (
+                <>
+                  <DollarSign className="h-5 w-5" />
+                  Payment
+                </>
+              )}
             </DialogTitle>
             <DialogDescription>
               {selectedEvent?.title} - {selectedEvent?.date}
+              {checkoutStep === 2 && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-xs px-2 py-1 h-auto ml-2"
+                  onClick={() => setCheckoutStep(1)}
+                >
+                  Edit Tickets
+                </Button>
+              )}
             </DialogDescription>
           </DialogHeader>
           
-          <div className="py-4">
-            {selectedEvent?.ticketTypes?.map((ticket, idx) => (
-              <div key={idx} className="flex justify-between items-center py-2 border-b">
-                <div>
-                  <p className="font-medium">{ticket.name}</p>
-                  <p className="text-sm text-gray-500">LKR {ticket.price}</p>
+          {checkoutStep === 1 ? (
+            <div className="py-4">
+              {selectedEvent?.ticketTypes?.map((ticket, idx) => (
+                <div key={idx} className="flex justify-between items-center py-2 border-b">
+                  <div>
+                    <p className="font-medium">{ticket.name}</p>
+                    <p className="text-sm text-gray-500">LKR {ticket.price}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button 
+                      className="w-8 h-8 flex items-center justify-center border rounded-full"
+                      onClick={() => {
+                        const curr = ticketSelections.find(t => t.type === ticket.name)?.quantity || 0;
+                        handleTicketChange(ticket.name, Math.max(0, curr - 1));
+                      }}
+                    >
+                      -
+                    </button>
+                    <span className="w-6 text-center">
+                      {ticketSelections.find(t => t.type === ticket.name)?.quantity || 0}
+                    </span>
+                    <button 
+                      className="w-8 h-8 flex items-center justify-center border rounded-full"
+                      onClick={() => {
+                        const curr = ticketSelections.find(t => t.type === ticket.name)?.quantity || 0;
+                        if (curr < 4) { // Max 4 tickets
+                          handleTicketChange(ticket.name, curr + 1);
+                        }
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button 
-                    className="w-8 h-8 flex items-center justify-center border rounded-full"
-                    onClick={() => {
-                      const curr = ticketSelections.find(t => t.type === ticket.name)?.quantity || 0;
-                      handleTicketChange(ticket.name, Math.max(0, curr - 1));
-                    }}
-                  >
-                    -
-                  </button>
-                  <span className="w-6 text-center">
-                    {ticketSelections.find(t => t.type === ticket.name)?.quantity || 0}
-                  </span>
-                  <button 
-                    className="w-8 h-8 flex items-center justify-center border rounded-full"
-                    onClick={() => {
-                      const curr = ticketSelections.find(t => t.type === ticket.name)?.quantity || 0;
-                      if (curr < 4) { // Max 4 tickets
-                        handleTicketChange(ticket.name, curr + 1);
-                      }
-                    }}
-                  >
-                    +
-                  </button>
+              ))}
+              
+              <div className="mt-4 space-y-1">
+                <div className="flex justify-between text-sm">
+                  <span>Subtotal:</span>
+                  <span>LKR {getTotalCost().subtotal.toFixed(2)}</span>
                 </div>
-              </div>
-            ))}
-            
-            <div className="mt-4 space-y-1">
-              <div className="flex justify-between text-sm">
-                <span>Subtotal:</span>
-                <span>LKR {getTotalCost().subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Service Fee (5%):</span>
-                <span>LKR {getTotalCost().serviceFee.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between font-bold pt-2 border-t mt-2">
-                <span>Total:</span>
-                <span>LKR {getTotalCost().total.toFixed(2)}</span>
+                <div className="flex justify-between text-sm">
+                  <span>Service Fee (5%):</span>
+                  <span>LKR {getTotalCost().serviceFee.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between font-bold pt-2 border-t mt-2">
+                  <span>Total:</span>
+                  <span>LKR {getTotalCost().total.toFixed(2)}</span>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="py-4">
+              {/* Summary of selected tickets */}
+              <div className="mb-6 p-3 bg-gray-50 rounded-md">
+                <h4 className="font-medium mb-2">Order Summary</h4>
+                {ticketSelections.filter(t => t.quantity > 0).map((ticket, idx) => (
+                  <div key={idx} className="flex justify-between text-sm">
+                    <span>{ticket.quantity} x {ticket.type}</span>
+                    <span>LKR {(ticket.price * ticket.quantity).toFixed(2)}</span>
+                  </div>
+                ))}
+                <div className="border-t mt-2 pt-2 flex justify-between font-medium">
+                  <span>Total</span>
+                  <span>LKR {getTotalCost().total.toFixed(2)}</span>
+                </div>
+              </div>
+              
+              {/* Payment methods selector */}
+              <PaymentMethodSelector
+                onPaymentMethodSelect={handlePaymentMethodSelect}
+                selectedMethod={paymentMethod}
+              />
+            </div>
+          )}
           
           <DialogFooter>
             <Button 
               variant="outline" 
-              onClick={() => setShowCheckout(false)}
+              onClick={() => {
+                if (checkoutStep === 2) {
+                  setCheckoutStep(1);
+                } else {
+                  setShowCheckout(false);
+                }
+              }}
             >
-              Cancel
+              {checkoutStep === 2 ? "Back" : "Cancel"}
             </Button>
             <Button 
               onClick={handleCheckout} 
               className="bg-[#FF5A5F] hover:bg-red-600"
             >
-              Proceed to Payment
+              {checkoutStep === 1 ? "Continue to Payment" : "Complete Purchase"}
             </Button>
           </DialogFooter>
         </DialogContent>
