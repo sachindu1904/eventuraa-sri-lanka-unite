@@ -16,7 +16,7 @@ const paymentSchema = z.object({
   cvv: z.string().min(3, 'CVV must be at least 3 digits'),
 });
 
-type PaymentMethod = 'visa' | 'mastercard' | 'paypal' | 'ezCash';
+type PaymentMethod = 'visa' | 'mastercard' | 'paypal' | 'ezCash' | 'unionpay' | 'alipay';
 
 interface PaymentMethodSelectorProps {
   onPaymentMethodSelect: (method: PaymentMethod) => void;
@@ -73,10 +73,10 @@ const PaymentMethodSelector = ({ onPaymentMethodSelect, selectedMethod }: Paymen
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-2">Select Payment Method</h3>
       
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <div 
           className={cn(
-            "border rounded-md p-3 flex flex-col items-center justify-center cursor-pointer transition-all",
+            "border rounded-md p-3 flex flex-col items-center justify-center cursor-pointer transition-all relative",
             selectedMethod === 'visa' 
               ? "border-[#1A3A63] bg-blue-50" 
               : "border-gray-200 hover:border-gray-300"
@@ -94,7 +94,7 @@ const PaymentMethodSelector = ({ onPaymentMethodSelect, selectedMethod }: Paymen
         
         <div 
           className={cn(
-            "border rounded-md p-3 flex flex-col items-center justify-center cursor-pointer transition-all",
+            "border rounded-md p-3 flex flex-col items-center justify-center cursor-pointer transition-all relative",
             selectedMethod === 'mastercard' 
               ? "border-[#1A3A63] bg-blue-50" 
               : "border-gray-200 hover:border-gray-300"
@@ -102,7 +102,10 @@ const PaymentMethodSelector = ({ onPaymentMethodSelect, selectedMethod }: Paymen
           onClick={() => onPaymentMethodSelect('mastercard')}
         >
           <div className="h-10 w-full flex items-center justify-center">
-            <CreditCard className="h-6 w-6" />
+            <div className="flex items-center">
+              <div className="w-6 h-6 bg-red-500 rounded-full opacity-80 mr-[-8px]"></div>
+              <div className="w-6 h-6 bg-yellow-500 rounded-full opacity-80"></div>
+            </div>
           </div>
           <span className="text-sm mt-2">Mastercard</span>
           {selectedMethod === 'mastercard' && (
@@ -112,7 +115,7 @@ const PaymentMethodSelector = ({ onPaymentMethodSelect, selectedMethod }: Paymen
         
         <div 
           className={cn(
-            "border rounded-md p-3 flex flex-col items-center justify-center cursor-pointer transition-all",
+            "border rounded-md p-3 flex flex-col items-center justify-center cursor-pointer transition-all relative",
             selectedMethod === 'paypal' 
               ? "border-[#1A3A63] bg-blue-50" 
               : "border-gray-200 hover:border-gray-300"
@@ -130,7 +133,7 @@ const PaymentMethodSelector = ({ onPaymentMethodSelect, selectedMethod }: Paymen
         
         <div 
           className={cn(
-            "border rounded-md p-3 flex flex-col items-center justify-center cursor-pointer transition-all",
+            "border rounded-md p-3 flex flex-col items-center justify-center cursor-pointer transition-all relative",
             selectedMethod === 'ezCash' 
               ? "border-[#1A3A63] bg-blue-50" 
               : "border-gray-200 hover:border-gray-300"
@@ -145,12 +148,67 @@ const PaymentMethodSelector = ({ onPaymentMethodSelect, selectedMethod }: Paymen
             <CheckCircle className="h-5 w-5 text-green-500 absolute top-2 right-2" />
           )}
         </div>
+        
+        {/* New UnionPay option for Chinese tourists */}
+        <div 
+          className={cn(
+            "border rounded-md p-3 flex flex-col items-center justify-center cursor-pointer transition-all relative",
+            selectedMethod === 'unionpay' 
+              ? "border-[#1A3A63] bg-blue-50" 
+              : "border-gray-200 hover:border-gray-300"
+          )}
+          onClick={() => onPaymentMethodSelect('unionpay')}
+        >
+          <div className="h-10 w-full flex items-center justify-center">
+            <div className="text-[#00447c] font-bold text-base border border-[#00447c] px-1 py-0.5 rounded">
+              UnionPay
+            </div>
+          </div>
+          <span className="text-sm mt-2">China Union Pay</span>
+          {selectedMethod === 'unionpay' && (
+            <CheckCircle className="h-5 w-5 text-green-500 absolute top-2 right-2" />
+          )}
+        </div>
+        
+        {/* New Alipay option for Asian tourists */}
+        <div 
+          className={cn(
+            "border rounded-md p-3 flex flex-col items-center justify-center cursor-pointer transition-all relative",
+            selectedMethod === 'alipay' 
+              ? "border-[#1A3A63] bg-blue-50" 
+              : "border-gray-200 hover:border-gray-300"
+          )}
+          onClick={() => onPaymentMethodSelect('alipay')}
+        >
+          <div className="h-10 w-full flex items-center justify-center">
+            <div className="text-[#00a0e9] font-bold text-base">
+              Alipay
+            </div>
+          </div>
+          <span className="text-sm mt-2">Alipay</span>
+          {selectedMethod === 'alipay' && (
+            <CheckCircle className="h-5 w-5 text-green-500 absolute top-2 right-2" />
+          )}
+        </div>
       </div>
       
-      {selectedMethod === 'visa' && (
+      {(selectedMethod === 'visa' || selectedMethod === 'mastercard' || selectedMethod === 'unionpay') && (
         <div className="mt-6 border rounded-md p-4 bg-white">
           <h4 className="font-medium mb-4 flex items-center">
-            <div className="bg-[#1A1F71] text-white font-bold italic text-xl px-2 py-1 rounded mr-2">VISA</div>
+            {selectedMethod === 'visa' && (
+              <div className="bg-[#1A1F71] text-white font-bold italic text-xl px-2 py-1 rounded mr-2">VISA</div>
+            )}
+            {selectedMethod === 'mastercard' && (
+              <div className="flex items-center mr-2">
+                <div className="w-6 h-6 bg-red-500 rounded-full opacity-80 mr-[-8px]"></div>
+                <div className="w-6 h-6 bg-yellow-500 rounded-full opacity-80"></div>
+              </div>
+            )}
+            {selectedMethod === 'unionpay' && (
+              <div className="text-[#00447c] font-bold text-base border border-[#00447c] px-1 py-0.5 rounded mr-2">
+                UnionPay
+              </div>
+            )}
             Card Details
           </h4>
           
@@ -226,6 +284,76 @@ const PaymentMethodSelector = ({ onPaymentMethodSelect, selectedMethod }: Paymen
               </div>
             </form>
           </Form>
+        </div>
+      )}
+      
+      {selectedMethod === 'paypal' && (
+        <div className="mt-6 border rounded-md p-6 bg-white text-center">
+          <div className="text-[#003087] font-bold text-2xl mb-4">Pay<span className="text-[#009cde]">Pal</span></div>
+          <p className="text-gray-600 mb-6">Click the button below to securely pay with PayPal.</p>
+          <button className="bg-[#0070ba] hover:bg-[#003087] text-white py-3 px-6 rounded-md w-full transition-colors">
+            Continue to PayPal
+          </button>
+          <p className="mt-4 text-sm text-gray-500">You will be redirected to PayPal to complete your payment securely.</p>
+        </div>
+      )}
+      
+      {selectedMethod === 'ezCash' && (
+        <div className="mt-6 border rounded-md p-6 bg-white">
+          <div className="text-red-600 font-bold text-2xl mb-4 text-center">eZ Cash</div>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="mobileNumber">Mobile Number</Label>
+              <Input
+                id="mobileNumber"
+                placeholder="+94 7XX XXX XXX"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="pin">PIN</Label>
+              <Input
+                id="pin"
+                type="password"
+                placeholder="Enter your PIN"
+                className="mt-1"
+              />
+            </div>
+            <p className="text-sm text-gray-500">You will receive a verification code on your phone to complete the payment.</p>
+          </div>
+        </div>
+      )}
+      
+      {selectedMethod === 'alipay' && (
+        <div className="mt-6 border rounded-md p-6 bg-white text-center">
+          <div className="text-[#00a0e9] font-bold text-2xl mb-4">Alipay</div>
+          <div className="border-4 border-gray-200 inline-block p-4 mx-auto mb-6">
+            <div className="bg-gray-200 w-48 h-48 flex items-center justify-center">
+              QR Code
+            </div>
+          </div>
+          <p className="text-gray-600">Scan the QR code with the Alipay app to complete your payment.</p>
+          <p className="mt-4 text-sm text-gray-500">For assistance, please contact our support team.</p>
+        </div>
+      )}
+      
+      {selectedMethod === 'unionpay' && (
+        <div className="mt-6 border rounded-md p-4 bg-white">
+          <div className="mb-4 flex items-center">
+            <div className="text-[#00447c] font-bold text-base border border-[#00447c] px-1 py-0.5 rounded mr-2">
+              UnionPay
+            </div>
+            <h4 className="font-medium">Card Details</h4>
+          </div>
+          
+          <div className="bg-blue-50 p-3 rounded mb-4 border border-blue-100">
+            <p className="text-sm text-blue-800 flex items-start">
+              <svg className="h-5 w-5 mr-2 mt-0.5 text-blue-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              All UnionPay cards are accepted. No additional fees for international transactions.
+            </p>
+          </div>
         </div>
       )}
     </div>
