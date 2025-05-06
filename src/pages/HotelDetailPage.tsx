@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -13,6 +14,9 @@ import PaymentMethodSelector from '@/components/PaymentMethodSelector';
 import { MapPin, Star, Calendar, Wifi, Coffee, Waves, Utensils, Check, Phone } from 'lucide-react';
 import { toast } from "sonner";
 
+// Define the PaymentMethod type to match what's expected by the PaymentMethodSelector
+type PaymentMethod = 'visa' | 'mastercard' | 'paypal' | 'ezCash' | 'unionpay' | 'alipay';
+
 const HotelDetailPage = () => {
   const { hotelId } = useParams<{ hotelId: string }>();
   const [selectedRoom, setSelectedRoom] = useState('deluxe');
@@ -20,7 +24,7 @@ const HotelDetailPage = () => {
   const [checkOutDate, setCheckOutDate] = useState('');
   const [guests, setGuests] = useState('2');
   const [addOns, setAddOns] = useState<string[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<'visa' | 'mastercard' | 'paypal' | 'ezCash'>('visa');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('visa');
   const [showPayment, setShowPayment] = useState(false);
 
   // Mock hotel data - in a real app, this would be fetched based on the hotelId
